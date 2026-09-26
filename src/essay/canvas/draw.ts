@@ -4,7 +4,7 @@
  * additive blending underneath the core stroke (cheap enough for 60 fps on phones, unlike blur filters).
  */
 
-import { INK, SERIF, alpha } from '../theme';
+import { CONCEPT, INK, SERIF, alpha } from '../theme';
 
 export const pt = (cx: number, cy: number, r: number, theta: number): [number, number] => [
   cx + r * Math.cos(theta),
@@ -241,79 +241,114 @@ function lobeLayer(ctx: CanvasRenderingContext2D) {
 export function magnetField(
   ctx: CanvasRenderingContext2D,
   g: StatorGeom,
-  field: { readonly amp: number; readonly axis: number; at(theta: number): number },
+  field: { readonly amp: number; readonly axis: number; at(theta: number): number; readonly poles?: number },
   color: string,
   maxAmp: number,
   { lines = true, letters = true, letterSize = 18, strength = 1 }: { lines?: boolean; letters?: boolean; letterSize?: number; strength?: number } = {},
 ) {
   const rel = Math.min(1, field.amp / maxAmp) * strength;
   if (rel < 0.01) return;
-  const depth = g.rb * 0.4; // thickness of a lobe at full strength
-  const n = 90;
+  const pairs = (field.poles ?? 2) / 2;
+  const pitch = Math.PI / pairs; // mechanical angle between a pole and the next (N → S)
+  const depth = g.rb * (pairs === 1 ? 0.4 : 0.3); // thickness of a lobe at full strength
+  const n = Math.round(90 / pairs);
+  // S lobes at axis + 2πk/pairs (flux enters the stator), N lobes half a pitch away (flux leaves it)
+  const lobes = Array.from({ length: 2 * pairs }, (_, j) => ({ centre: field.axis + j * pitch, sign: j % 2 === 0 ? 1 : -1 }));
 
-  // Flux lines across the bore, parallel to the field (from N face to S face), under the lobes.
   if (lines) {
-    const ux = Math.cos(field.axis);
-    const uy = -Math.sin(field.axis);
-    const R = g.rb * 0.985;
     ctx.save();
     ctx.lineCap = 'round';
-    for (let k = -2; k <= 2; k++) {
-      const o = k * g.rb * 0.3;
-      const half = Math.sqrt(Math.max(0, R * R - o * o));
-      const mx = g.cx - uy * o;
-      const my = g.cy + ux * o;
-      const a = (0.1 + 0.26 * (1 - Math.abs(k) / 3)) * rel;
-      ctx.strokeStyle = alpha(color, a);
-      ctx.lineWidth = 2.2;
-      ctx.beginPath();
-      ctx.moveTo(mx - ux * half, my - uy * half);
-      ctx.lineTo(mx + ux * half, my + uy * half);
-      ctx.stroke();
-      // a small chevron showing the direction (towards the S lobe)
+    ctx.lineWidth = 2.2;
+    const chevron = (mx: number, my: number, ux: number, uy: number, a: number) => {
       const s = 6;
+      ctx.strokeStyle = alpha(color, a);
       ctx.beginPath();
-      ctx.moveTo(mx + ux * s - uy * s * 0.8, my + uy * s + ux * s * 0.8);
-      ctx.lineTo(mx + ux * s * 2, my + uy * s * 2);
-      ctx.lineTo(mx + ux * s + uy * s * 0.8, my + uy * s - ux * s * 0.8);
+      ctx.moveTo(mx - ux * s - uy * s * 0.8, my - uy * s + ux * s * 0.8);
+      ctx.lineTo(mx, my);
+      ctx.lineTo(mx - ux * s + uy * s * 0.8, my - uy * s - ux * s * 0.8);
       ctx.stroke();
+    };
+    if (pairs === 1) {
+      // two poles: straight lines across the bore, parallel to the field, from the N face to the S face
+      const ux = Math.cos(field.axis);
+      const uy = -Math.sin(field.axis);
+      const R = g.rb * 0.985;
+      for (let k = -2; k <= 2; k++) {
+        const o = k * g.rb * 0.3;
+        const half = Math.sqrt(Math.max(0, R * R - o * o));
+        const mx = g.cx - uy * o;
+        const my = g.cy + ux * o;
+        const a = (0.1 + 0.26 * (1 - Math.abs(k) / 3)) * rel;
+        ctx.strokeStyle = alpha(color, a);
+        ctx.beginPath();
+        ctx.moveTo(mx - ux * half, my - uy * half);
+        ctx.lineTo(mx + ux * half, my + uy * half);
+        ctx.stroke();
+        chevron(mx + ux * 8, my + uy * 8, ux, uy, a);
+      }
+    } else {
+      // more poles: nested curves from each N face to the S faces beside it
+      for (const lobe of lobes) {
+        if (lobe.sign > 0) continue;
+        for (const dir of [1, -1] as const) {
+          for (const q of [0.06, 0.2, 0.34]) {
+            const a0 = lobe.centre + dir * pitch * q;
+            const a1 = lobe.centre + dir * pitch * (1 - q);
+            const half = (pitch * (1 - 2 * q)) / 2;
+            const [x0, y0] = pt(g.cx, g.cy, g.rb * 0.97, a0);
+            const [x1, y1] = pt(g.cx, g.cy, g.rb * 0.97, a1);
+            const [qx, qy] = pt(g.cx, g.cy, g.rb * (1 - 1.25 * Math.sin(half)), (a0 + a1) / 2);
+            const a = (0.12 + 0.3 * (q / 0.34)) * rel;
+            ctx.strokeStyle = alpha(color, a);
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.quadraticCurveTo(qx, qy, x1, y1);
+            ctx.stroke();
+            // midpoint and direction of the curve (t = ½)
+            const mx = 0.25 * x0 + 0.5 * qx + 0.25 * x1;
+            const my = 0.25 * y0 + 0.5 * qy + 0.25 * y1;
+            const len = Math.hypot(x1 - x0, y1 - y0) || 1;
+            chevron(mx, my, (x1 - x0) / len, (y1 - y0) / len, a);
+          }
+        }
+      }
     }
     ctx.restore();
   }
 
-  // Lobes: region between the bore and r(θ) = rb − depth·|B_r(θ)|/maxAmp on each side of the field axis (thickness ∝
-  // flux density), filled with an opacity ∝ B_r² — the magnetic energy density — (conic gradient) and fades towards the centre (radial mask), drawn in an
-  // offscreen layer and added onto the figure: two luminous poles, dark at the neutral zones.
+  // Lobes: region between the bore and r(θ) = rb − depth·|B_r(θ)|/maxAmp around each pole (thickness ∝ flux density),
+  // filled with an opacity ∝ B_r² — the magnetic energy density, a visual choice approved at checkpoint 2c — through a
+  // conic gradient, faded towards the centre (radial mask) in an offscreen layer and added onto the figure.
   const { layer, lc } = lobeLayer(ctx);
-  for (const sign of [1, -1] as const) {
-    const centre = sign > 0 ? field.axis : field.axis + Math.PI;
-    const path = new Path2D();
+  const path = new Path2D();
+  for (const lobe of lobes) {
+    const from = lobe.centre - pitch / 2;
     for (let k = 0; k <= n; k++) {
-      const th = centre - Math.PI / 2 + (Math.PI * k) / n;
-      const b = Math.max(0, sign * field.at(th)) / maxAmp;
+      const th = from + (pitch * k) / n;
+      const b = Math.max(0, lobe.sign * field.at(th)) / maxAmp;
       const [x, y] = pt(g.cx, g.cy, g.rb - depth * b * strength, th);
       if (k === 0) path.moveTo(x, y);
       else path.lineTo(x, y);
     }
     for (let k = n; k >= 0; k--) {
-      const [x, y] = pt(g.cx, g.cy, g.rb, centre - Math.PI / 2 + (Math.PI * k) / n);
+      const [x, y] = pt(g.cx, g.cy, g.rb, from + (pitch * k) / n);
       path.lineTo(x, y);
     }
     path.closePath();
-    // conic stop f ↔ mathematical angle −2πf
-    let fillStyle: string | CanvasGradient = alpha(color, 0.6 * rel);
-    if (typeof lc.createConicGradient === 'function') {
-      const grad = lc.createConicGradient(0, g.cx, g.cy);
-      for (let k = 0; k <= 72; k++) {
-        const bk = Math.max(0, sign * field.at(-2 * Math.PI * (k / 72))) / maxAmp;
-        // brightness ∝ B² (magnetic energy density); the lobe thickness above is ∝ |B_r|
-        grad.addColorStop(k / 72, alpha(color, 0.72 * bk * bk * strength));
-      }
-      fillStyle = grad;
-    }
-    lc.fillStyle = fillStyle;
-    lc.fill(path);
   }
+  let fillStyle: string | CanvasGradient = alpha(color, 0.6 * rel);
+  if (typeof lc.createConicGradient === 'function') {
+    // conic stop f ↔ mathematical angle −2πf
+    const stops = 36 * Math.max(2, pairs);
+    const grad = lc.createConicGradient(0, g.cx, g.cy);
+    for (let k = 0; k <= stops; k++) {
+      const bk = Math.abs(field.at(-2 * Math.PI * (k / stops))) / maxAmp;
+      grad.addColorStop(k / stops, alpha(color, 0.72 * bk * bk * strength));
+    }
+    fillStyle = grad;
+  }
+  lc.fillStyle = fillStyle;
+  lc.fill(path);
   const fade = lc.createRadialGradient(g.cx, g.cy, g.rb - depth * 1.05, g.cx, g.cy, g.rb);
   fade.addColorStop(0, 'rgba(0,0,0,0)');
   fade.addColorStop(0.55, 'rgba(0,0,0,0.55)');
@@ -331,25 +366,36 @@ export function magnetField(
   ctx.drawImage(layer, 0, 0, layer.width / scale, layer.height / scale);
   ctx.restore();
 
-  for (const sign of [1, -1] as const) {
-    const centre = sign > 0 ? field.axis : field.axis + Math.PI;
-    if (letters && rel > 0.18) {
-      // inside the lobe, next to the bore: clear of the field arrows in the middle (their tips stay within 0.75·rb)
-      const [lx, ly] = pt(g.cx, g.cy, g.rb - letterSize * 0.8, centre);
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, (rel - 0.18) / 0.3);
-      ctx.font = `650 ${letterSize}px ${SERIF}`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.lineJoin = 'round';
-      ctx.strokeStyle = INK.bg;
-      ctx.lineWidth = letterSize * 0.3;
-      const letter = sign > 0 ? 'S' : 'N';
-      ctx.strokeText(letter, lx, ly);
-      ctx.fillStyle = INK.text;
-      ctx.fillText(letter, lx, ly);
-      ctx.restore();
-    }
+  // inside the lobe, next to the bore: clear of the field arrows in the middle
+  if (letters) poleLetters(ctx, g, field, maxAmp, { radius: g.rb - letterSize * 0.8, size: letterSize, strength });
+}
+
+/** N and S at the field's poles (S where flux enters the stator), at a chosen radius. */
+export function poleLetters(
+  ctx: CanvasRenderingContext2D,
+  g: StatorGeom,
+  field: { readonly amp: number; readonly axis: number; readonly poles?: number },
+  maxAmp: number,
+  { radius, size, strength = 1 }: { radius: number; size: number; strength?: number },
+) {
+  const rel = Math.min(1, field.amp / maxAmp) * strength;
+  if (rel <= 0.18) return;
+  const pairs = (field.poles ?? 2) / 2;
+  for (let j = 0; j < 2 * pairs; j++) {
+    const [lx, ly] = pt(g.cx, g.cy, radius, field.axis + (j * Math.PI) / pairs);
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, (rel - 0.18) / 0.3);
+    ctx.font = `650 ${size}px ${SERIF}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = INK.bg;
+    ctx.lineWidth = size * 0.3;
+    const letter = j % 2 === 0 ? 'S' : 'N';
+    ctx.strokeText(letter, lx, ly);
+    ctx.fillStyle = INK.text;
+    ctx.fillText(letter, lx, ly);
+    ctx.restore();
   }
 }
 
@@ -437,4 +483,79 @@ export function axisLine(ctx: CanvasRenderingContext2D, cx: number, cy: number, 
   ctx.lineTo(x2, y2);
   ctx.stroke();
   ctx.restore();
+}
+
+/**
+ * Two-pole salient rotor seen end-on, N pole at `angle` (mathematical). The N pole face glows orange (the rotor's own
+ * field leaves there); `letters` marks the poles N and S. Everything stays inside the bore.
+ */
+export function salientRotor(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  r: number,
+  angle: number,
+  { letters = false, letterSize = 16 }: { letters?: boolean; letterSize?: number } = {},
+) {
+  const coreHalf = r * 0.34;
+  ctx.save();
+  // everything rotor-related stays inside the bore (its glow must not spill onto the stator or the canvas edge)
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 1.06, 0, 2 * Math.PI);
+  ctx.clip();
+  ctx.translate(cx, cy);
+  ctx.rotate(-angle);
+  // pole body + shoes (N at +x, S at −x)
+  const shoe = 0.62; // half-angle of a pole shoe, rad
+  ctx.beginPath();
+  ctx.moveTo(-r * Math.cos(shoe), -r * Math.sin(shoe));
+  ctx.arc(0, 0, r, Math.PI + shoe, Math.PI - shoe, true);
+  ctx.lineTo(-coreHalf * 1.6, coreHalf);
+  ctx.lineTo(coreHalf * 1.6, coreHalf);
+  ctx.lineTo(r * Math.cos(shoe), r * Math.sin(shoe));
+  ctx.arc(0, 0, r, shoe, -shoe, true);
+  ctx.lineTo(coreHalf * 1.6, -coreHalf);
+  ctx.lineTo(-coreHalf * 1.6, -coreHalf);
+  ctx.closePath();
+  ctx.fillStyle = INK.steelLight;
+  ctx.fill();
+  ctx.strokeStyle = INK.steelEdge;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // warm glow on the N pole face (the rotor's own field leaves here)
+  ctx.globalCompositeOperation = 'lighter';
+  const grad = ctx.createRadialGradient(r * 0.95, 0, 0, r * 0.95, 0, r * 0.8);
+  grad.addColorStop(0, alpha(CONCEPT.rotor, 0.45));
+  grad.addColorStop(1, alpha(CONCEPT.rotor, 0));
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(r * 0.95, 0, r * 0.8, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.restore();
+  // hub
+  ctx.fillStyle = INK.steel;
+  ctx.strokeStyle = INK.steelEdge;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 0.2, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.stroke();
+  if (letters) {
+    for (const [letter, a] of [
+      ['N', angle],
+      ['S', angle + Math.PI],
+    ] as const) {
+      const [lx, ly] = pt(cx, cy, r * 0.86, a);
+      ctx.save();
+      ctx.font = `650 ${letterSize}px ${SERIF}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = INK.bg;
+      ctx.lineWidth = letterSize * 0.3;
+      ctx.strokeText(letter, lx, ly);
+      ctx.fillStyle = INK.text;
+      ctx.fillText(letter, lx, ly);
+      ctx.restore();
+    }
+  }
 }

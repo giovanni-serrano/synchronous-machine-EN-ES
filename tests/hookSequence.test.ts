@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HOOK_LAG, HOOK_LOOP_S, HOOK_STAGES, hookFrame } from '../src/essay/figures/hookSequence';
+import { HOOK_ESSAY_LOOP_S, HOOK_LAG, HOOK_LOOP_S, HOOK_STAGES, hookFrame } from '../src/essay/figures/hookSequence';
 
 describe('hook loop timeline', () => {
   it('stages in order: empty machine, field alone, then the rotor appears and locks on', () => {
@@ -22,6 +22,28 @@ describe('hook loop timeline', () => {
     for (let t = dt; t <= 2 * HOOK_LOOP_S; t += dt) {
       const f = hookFrame(t);
       expect(Math.abs(f.envelope - prev.envelope), `envelope at ${t.toFixed(2)} s`).toBeLessThan(0.03);
+      expect(Math.abs(f.rotor - prev.rotor), `rotor at ${t.toFixed(2)} s`).toBeLessThan(0.03);
+      if (f.rotor > 0.01 && prev.rotor > 0.01) expect(Math.abs(f.lag - prev.lag), `lag at ${t.toFixed(2)} s`).toBeLessThan(0.05);
+      prev = f;
+    }
+  });
+});
+
+describe('hook loop — essay variant (review 2c)', () => {
+  it('opens with the magnet already turning and never shows the empty stator; only the rotor comes and goes', () => {
+    expect(hookFrame(0, 'essay').stage).toBe('field');
+    for (let t = 0; t <= 2 * HOOK_ESSAY_LOOP_S; t += 0.05) {
+      const f = hookFrame(t, 'essay');
+      expect(['empty', 'energise', 'fade']).not.toContain(f.stage);
+      expect(f.envelope, `field on at ${t.toFixed(2)} s`).toBe(1);
+    }
+  });
+
+  it('no jumps across stages or the loop restart', () => {
+    const dt = 1 / 120;
+    let prev = hookFrame(0, 'essay');
+    for (let t = dt; t <= 2 * HOOK_ESSAY_LOOP_S; t += dt) {
+      const f = hookFrame(t, 'essay');
       expect(Math.abs(f.rotor - prev.rotor), `rotor at ${t.toFixed(2)} s`).toBeLessThan(0.03);
       if (f.rotor > 0.01 && prev.rotor > 0.01) expect(Math.abs(f.lag - prev.lag), `lag at ${t.toFixed(2)} s`).toBeLessThan(0.05);
       prev = f;

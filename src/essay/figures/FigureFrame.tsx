@@ -21,6 +21,7 @@ export function FigureFrame({
   onPointerMove,
   onPointerUp,
   className = '',
+  bar,
   children,
 }: {
   boxRef: Ref<HTMLDivElement>;
@@ -37,6 +38,8 @@ export function FigureFrame({
   onPointerMove?: (e: PointerEvent<HTMLCanvasElement>) => void;
   onPointerUp?: (e: PointerEvent<HTMLCanvasElement>) => void;
   className?: string;
+  /** Controls and live readouts in a fixed-height row under the figure (their text changes; the row never resizes). */
+  bar?: ReactNode;
   children?: ReactNode;
 }) {
   const { d } = useI18n();
@@ -74,6 +77,7 @@ export function FigureFrame({
         )}
         {children}
       </div>
+      {bar && <div className="fig__bar">{bar}</div>}
       {(instruction || keysHint) && (
         <figcaption className="fig__caption">
           {instruction}

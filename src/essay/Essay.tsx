@@ -10,6 +10,9 @@ import { SymbolText } from '../ui/SymbolText';
 import { HookFigure } from './figures/HookFigure';
 import { OneCoilFigure } from './figures/OneCoilFigure';
 import { ThreeCoilsFigure } from './figures/ThreeCoilsFigure';
+import { PolesFigure } from './figures/PolesFigure';
+import { RotorFigure } from './figures/RotorFigure';
+import { LoadFigure } from './figures/LoadFigure';
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
@@ -84,6 +87,39 @@ export function Essay() {
           <P>{e.threeCoils.p3}</P>
           <P>{e.threeCoils.p4}</P>
           <Formula>{e.threeCoils.formula}</Formula>
+        </Section>
+
+        <Section id="poles" title={e.poles.title}>
+          <P>{e.poles.p1}</P>
+          <P>{e.poles.p2}</P>
+          <PolesFigure />
+          <P>{e.poles.p3}</P>
+          <Formula>{e.poles.formula}</Formula>
+        </Section>
+
+        <Section id="rotor" title={e.rotor.title}>
+          <P>{e.rotor.p1}</P>
+          <P>{e.rotor.p2}</P>
+          <RotorFigure />
+          <P>{e.rotor.p3}</P>
+          <p className="prose question">{e.rotor.question}</p>
+          <Formula>{e.rotor.formula}</Formula>
+        </Section>
+
+        <Section id="load" title={e.load.title}>
+          <P>{e.load.p1}</P>
+          <P>{e.load.p2}</P>
+          <LoadFigure variant="load" />
+          <P>{e.load.p3}</P>
+          <Formula>{e.load.formula}</Formula>
+        </Section>
+
+        <Section id="motor-or-generator" title={e.motorGen.title}>
+          <P>{e.motorGen.p1}</P>
+          <P>{e.motorGen.p2}</P>
+          <LoadFigure variant="motorGen" />
+          <P>{e.motorGen.p3}</P>
+          <Formula>{e.motorGen.formula}</Formula>
         </Section>
 
         <section className="essay-section essay-next" aria-labelledby="next-title">

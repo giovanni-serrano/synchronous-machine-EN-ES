@@ -14,7 +14,8 @@
  * The stator field itself always follows the model (statorGapField); the rotor's pull-in is a qualitative illustration.
  */
 
-export type HookStage = 'empty' | 'energise' | 'field' | 'rotor' | 'lockIn' | 'locked' | 'fade';
+export type HookStage = 'empty' | 'energise' | 'field' | 'rotor' | 'lockIn' | 'locked' | 'fade' | 'rotorOut';
+export type HookVariant = 'clip' | 'essay';
 
 export const HOOK_STAGES: ReadonlyArray<readonly [HookStage, number]> = [
   ['empty', 1.4],
@@ -26,6 +27,22 @@ export const HOOK_STAGES: ReadonlyArray<readonly [HookStage, number]> = [
   ['fade', 1.5],
 ];
 export const HOOK_LOOP_S = HOOK_STAGES.reduce((s, [, d]) => s + d, 0);
+
+/**
+ * The essay's variant (review 2c): it opens with the magnet already turning and never shows the empty stator; at the
+ * end only the rotor fades out, so the loop returns to the magnet turning alone.
+ */
+export const HOOK_ESSAY_STAGES: ReadonlyArray<readonly [HookStage, number]> = [
+  ['field', 5.5],
+  ['rotor', 1.6],
+  ['lockIn', 3.2],
+  ['locked', 6.0],
+  ['rotorOut', 1.5],
+];
+export const HOOK_ESSAY_LOOP_S = HOOK_ESSAY_STAGES.reduce((s, [, d]) => s + d, 0);
+
+export const hookStages = (variant: HookVariant) => (variant === 'essay' ? HOOK_ESSAY_STAGES : HOOK_STAGES);
+export const hookLoopSeconds = (variant: HookVariant) => (variant === 'essay' ? HOOK_ESSAY_LOOP_S : HOOK_LOOP_S);
 /** Electrical cycle of the field in the hook, s (slow: the field turns once every 8 s). */
 export const HOOK_CYCLE_S = 8;
 /** Final lag of the rotor behind the field (a lightly loaded motor), rad. */
@@ -50,10 +67,13 @@ const smooth = (x: number) => {
 
 const START_LAG = 1.7;
 
-export function hookFrame(loopTime: number): HookFrame {
-  let t = ((loopTime % HOOK_LOOP_S) + HOOK_LOOP_S) % HOOK_LOOP_S;
-  for (const [stage, dur] of HOOK_STAGES) {
-    if (t < dur || stage === 'fade') {
+export function hookFrame(loopTime: number, variant: HookVariant = 'clip'): HookFrame {
+  const loop = hookLoopSeconds(variant);
+  const stages = hookStages(variant);
+  const last = stages[stages.length - 1]![0];
+  let t = ((loopTime % loop) + loop) % loop;
+  for (const [stage, dur] of stages) {
+    if (t < dur || stage === last) {
       const p = Math.min(1, t / dur);
       switch (stage) {
         case 'empty':
@@ -74,6 +94,8 @@ export function hookFrame(loopTime: number): HookFrame {
           return { stage, envelope: 1, rotor: 1, lag: HOOK_LAG, caption: 3 };
         case 'fade':
           return { stage, envelope: 1 - smooth(p), rotor: 1 - smooth(p), lag: HOOK_LAG, caption: 3 };
+        case 'rotorOut':
+          return { stage, envelope: 1, rotor: 1 - smooth(p), lag: HOOK_LAG, caption: 3 };
       }
     }
     t -= dur;

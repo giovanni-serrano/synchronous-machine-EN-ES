@@ -18,7 +18,7 @@ export function HookClip({ still }: { still?: number }) {
   return (
     <div className="essay hook-clip">
       <div className="hook-clip__stage">
-        <HookFigure onFrame={onFrame} still={still} />
+        <HookFigure onFrame={onFrame} still={still} variant="clip" letterScale={1.7} />
         <div className="hook-clip__captions" aria-live="polite">
           {captions.map((text, k) => (
             <p key={k} className={k === caption ? 'is-on' : undefined} aria-hidden={k !== caption}>

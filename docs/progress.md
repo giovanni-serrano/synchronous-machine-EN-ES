@@ -15,7 +15,10 @@ Architecture: [architecture.md](architecture.md).
 | 5 | P, Q, S and PF | **Done** |
 | 6 | Phasors | **Done** — CP2: physics approved, experience rejected |
 | 2b | **Explorable essay** (replaces 7–8): vertical slice hook + §2 + §3, scroll fix, layout test, publishing prepared | Done — CP2b reviewed |
-| 2c | Review fixes: field as a magnet, readable components, hook loop, big desktop figures, own ending | **Done — awaiting review** |
+| 2c | Review fixes: field as a magnet, readable components, hook loop, big desktop figures, own ending | Done — approved |
+| E1 | Essay batch 1: §4 poles, §5 rotor, §6 load and δ, §7 motor or generator (+ hook opens on the magnet, bigger clip letters) | **Done — awaiting review** |
+| E2 | Essay batch 2: §8–§11 (voltage and current, P and Q with energy particles, S and PF, excitation) | Not started |
+| E3 | Essay batch 3: §12–§14 (stability limit, phasors, the complete machine restyled) | Not started |
 | 7 | Excitation, δ, stability, V curves → essay §11–12 and the lab | Not started |
 | 8 | Guided lesson → replaced by the essay (docs/experience-redesign.md) | Replaced |
 | 9 | Presentation mode and social clips (built on the essay sections) | Not started |
@@ -222,6 +225,24 @@ Kept: typography, contrast, column, tone. Fixed:
 - OG image now shows the magnet alone in the empty machine (the headline's claim).
 - Checks: 175 tests; layout stability OK (phone + desktop, EN/ES, lab); perf LCP 1.18 s, 114 KB (slow 4G, CPU ×4).
 
+## Essay batch 1 — delivered (§4–§7)
+
+- Review 2c items: the essay hook opens with the magnet already turning (essay variant of the loop, tested: never the
+  empty stator, field always on); the clip's N / S letters are 1.7× larger; B² brightness documented as an approved
+  visual choice.
+- **§4 More poles, slower field** (`PolesFigure`): windingConductors(poles) and airGapFluxDensity(θ, ωt, poles), 2–8
+  poles with − / + buttons in a fixed-height bar (readout "6 poles / 1,200 rpm at 60 Hz"), cross-fade on change, same
+  current waves. Tested: S peaks every 360°/(poles/2), rotation ω/(poles/2), n_sync = 7200 / poles at 60 Hz.
+- **§5 The rotor** (`RotorFigure`): salient rotor with N/S letters in the net field (white), drag to pull it off (field
+  paused while held), release → damped swing (qualitative: δ'' = −K sin δ − D δ'), slipping a pole if pushed past 180°.
+- **§6 The load** and **§7 Motor or generator** (`LoadFigure` variants): the model's operatingPointAtDelta with E_A of
+  scenario A (367 V), fieldVectors for B_R / B_net, δ arc, "magnetic spring" lines whose tension follows |sin δ|, a
+  draggable P–δ curve (dashed past ±90°), readouts δ, P and energy direction. Tested: P_max ≈ 152.6 kW, δ = 41° → 100 kW,
+  B_R behind B_net for a motor and ahead for a generator.
+- `magnetField` generalised to any number of poles; `salientRotor` and `poleLetters` shared in draw.ts.
+- Recordings (`scripts/record.mjs` modes poles, rotor, load, motor-gen, hook) — phone-sized WebM.
+- Checks: 185 tests; layout stability OK; perf LCP 1.27 s, JS 99 KB gzip.
+
 ## Decisions log
 
 | # | Decision | Where |
@@ -255,6 +276,9 @@ Kept: typography, contrast, column, tone. Fixed:
 | D28 | Hook headline "Three coils that never move make a magnet that spins." (alternatives in experience-redesign.md §5). | en.ts |
 | D29 | Field lobes: thickness ∝ |B_r|, brightness ∝ B_r² (energy density) so N and S read as separate poles. | draw.ts magnetField |
 | D30 | Hook loop timeline is a pure function of loop time (hookSequence.ts): essay, clip view, recordings and stills agree. | hookSequence.ts |
+| D31 | From §5 on the lobes show the net field B_net (white) — the grid holds it — and the rotor field B_R is orange; the air gap is drawn exaggerated. | rotorScene.ts |
+| D32 | §5–§7 figures use two poles (mechanical = electrical angles); the reference machine's 4 poles return in the lab. Torque is not shown there (it depends on the pole count); P is. | rotorScene.ts |
+| D33 | The rotor's return in §5 is a qualitative swing equation, like the transients planned for §12. | RotorFigure.tsx |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

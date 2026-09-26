@@ -44,6 +44,12 @@ New form: an **explorable explanation** in the manner of Bartosz Ciechanowski's 
   (`statorGapField` = `airGapFluxDensity` with three coils, tested): lobe **thickness ∝ |B_r|** (the flux density, read
   as geometry) and **brightness ∝ B_r²** (the magnetic energy density). With brightness ∝ |B_r| the cosine distribution
   still read as a ring (at 45° from the pole B is 71 % of the peak); the energy mapping makes the neutral zones dark.
+  **Visual choice approved at checkpoint 2c**: the glow shows the magnetic energy density B²/2μ₀, the thickness shows the
+  flux density itself. Any number of poles: `poles/2` pairs of lobes; with 4+ poles the flux lines curve from each N to
+  the S beside it.
+- **Two fields, two colours**: §2–§4 draw the field of the stator coils (sky). From §5 on — rotor inside, machine on the
+  grid — the lobes are the **net** air-gap field B_net (warm white), which the grid holds fixed; the rotor and B_R are
+  orange. The air gap is drawn exaggerated (rotor at 80 % of the bore) so the stretched field lines can be seen.
 - **Motion**: slow by default — one rotor turn ≥ 8 s in narrative sections; eased transitions (cubic in-out, 400–700 ms)
   when a figure changes state; nothing snaps. Every figure pauses when it leaves the viewport or the tab is hidden, and
   honours `prefers-reduced-motion` (static frame + manual scrub).
@@ -109,6 +115,10 @@ damped approach. Three candidate lines:
 The slice uses (2) as the headline and (1) as the standfirst, because (2) is answered by the very next two sections and
 (1) promises the whole essay. Easy to swap.
 
+Review 2c: in the essay the loop opens with the magnet already turning and never shows the empty stator (essay variant:
+field → rotor appears → locks on → locked → only the rotor fades; tested). The empty-stator opening stays in
+`?view=hook-clip`, whose N / S letters are enlarged (×1.7) to read inside X on a phone.
+
 ## 6. Essay map (with adjustments)
 
 | # | Title (EN) | Idea | Figure & manipulation |
@@ -116,10 +126,10 @@ The slice uses (2) as the headline and (1) as the standfirst, because (2) is ans
 | 1 | Hook | Three fixed coils make a spinning magnet; the same machine can motor or generate | Big machine, slow, no UI |
 | 2 | One coil | A current makes a field along the coil's axis; alternating current makes it **pulse**, not turn | Coil cross-section, field arrow + air-gap glow; drag the current dot along its wave (or let it play) |
 | 3 | Three coils | Three pulses 120° apart **add into one field that turns** at constant strength | First each component pulses on its own axis; after 5 s they slide (eased) tip to tail and the sum appears — translucent with an outline, under the components — with the exact locus of its tip; a button toggles the two views; tap coils on/off; scrub time ★ |
-| 4 | More poles, slower | n_sync = 120 f / poles: same frequency, more poles, slower turn | Pole count stepper; stopwatch readout in rpm |
-| 5 | The rotor | A magnet chases the field and locks on at exactly synchronous speed | Drag the rotor off, release: it snaps back and rides along |
-| 6 | Load | A load makes the rotor fall back by δ; the "magnetic spring" stretches ★ | Drag δ on the figure; field lines stretch; torque meter |
-| 7 | Motor or generator | Push δ the other way and energy reverses — same machine, same wires | Signed δ drag across zero; energy arrows flip |
+| 4 | More poles, slower | n_sync = 120 f / poles: same frequency, more poles, slower turn | − / + poles (2–8) under the figure, readout "6 poles · 1,200 rpm at 60 Hz"; the field cross-fades; the three currents never change ✔ |
+| 5 | The rotor | A magnet in the (white) net field locks on at exactly synchronous speed | Drag the rotor off (the field pauses while held), release: a damped swing (qualitative swing equation) brings it back; past 180° it slips a pole and locks on again ✔ |
+| 6 | Load | A load makes the rotor fall back by δ; the "magnetic spring" stretches ★ | Drag the rotor or along the P–δ curve (0–89°, peak at 90°, dashed beyond); readout δ, P from operatingPointAtDelta ✔ |
+| 7 | Motor or generator | Push δ the other way and energy reverses — same machine, same wires | Same figure, signed δ (−89° … 89°), curve −120° … 120°; readout "generator · shaft → grid" ✔ |
 | 8 | One phase | Voltage and current waves; their product is instantaneous power | Scrub; phase-shift slider |
 | 9 | P and Q | Part of the energy stays (P), part goes and comes back (Q); the three-phase total is constant ★★ **energy particles** | Particle flow grid ↔ machine ↔ shaft, per phase; excitation / PF slider |
 | 10 | S and power factor | Q costs current; same P, lower PF → more current | Current bar + triangle |

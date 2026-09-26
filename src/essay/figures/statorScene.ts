@@ -74,14 +74,16 @@ export function winding(
     letters = true,
     letterSize = 15,
     envelope = 1,
-  }: { planes?: boolean; letters?: boolean; letterSize?: number; envelope?: number } = {},
+    poles = 2,
+  }: { planes?: boolean; letters?: boolean; letterSize?: number; envelope?: number; poles?: number } = {},
 ) {
   const { g } = L;
+  const all = poles === 2 ? CONDUCTORS_2P : windingConductors(poles);
   for (const phase of phases) {
     const on = enabled[phase];
     const color = PHASE_COLOR[phase];
-    const cs = CONDUCTORS_2P.filter((c) => c.phase === phase);
-    if (planes) {
+    const cs = all.filter((c) => c.phase === phase);
+    if (planes && poles === 2) {
       const go = cs.find((c) => c.side === 'go')!;
       const ret = cs.find((c) => c.side === 'return')!;
       const [x1, y1] = pt(g.cx, g.cy, L.rCond, go.angle);
@@ -92,7 +94,7 @@ export function winding(
     for (const c of cs) {
       const [x, y] = pt(g.cx, g.cy, L.rCond, c.angle);
       conductor(ctx, x, y, L.rc, color, c.side === 'go' ? i : -i, on);
-      if (letters) {
+      if (letters && poles === 2) {
         const [lx, ly] = pt(g.cx, g.cy, g.ro + letterSize * 0.95, c.angle);
         label(ctx, c.side === 'go' ? phase : `${phase}′`, lx, ly, letterSize, { color: on ? INK.textDim : INK.textFaint, italic: true });
       }

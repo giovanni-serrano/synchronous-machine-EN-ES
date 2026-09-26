@@ -11,7 +11,7 @@ export function OgCard() {
   return (
     <div className="essay og-card">
       <div className="og-card__figure">
-        <HookFigure still={FIELD_FRAME_TIME} />
+        <HookFigure still={FIELD_FRAME_TIME} variant="clip" letterScale={1.3} />
       </div>
       <div className="og-card__text">
         <p className="hook__byline">{d.essay.byline}</p>

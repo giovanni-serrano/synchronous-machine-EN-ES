@@ -438,6 +438,13 @@ p.prose {
   }
 }
 
+/* Square figures (the rotor): full width on phones, large but within the screen height on desktop */
+@media (min-width: 960px) {
+  .fig--square .fig__box {
+    max-width: min(760px, 80svh);
+  }
+}
+
 /* Text button inside a figure (fixed position: its label may change without moving anything) */
 .fig__textbtn {
   position: absolute;
@@ -462,4 +469,66 @@ p.prose {
     right: 3.5%;
     bottom: 22%;
   }
+}
+
+/* ---------- Figure bar: controls + live readouts under a figure, fixed height ---------- */
+
+.fig__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  max-width: 640px;
+  margin: 10px auto 0;
+  padding-inline: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (min-width: 960px) {
+  .fig--scene .fig__bar {
+    max-width: min(900px, 94vw);
+  }
+}
+
+.fig__round {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font: 500 22px/1 var(--mono);
+  color: var(--text);
+  background: rgba(13, 15, 18, 0.7);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.fig__round:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.fig__readout {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  line-height: 1.3;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.fig__readout > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fig__readout .dim {
+  color: var(--text-dim);
 }
