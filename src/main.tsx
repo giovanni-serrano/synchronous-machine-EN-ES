@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { parseUrlOptions } from './app/urlParams';
 import { I18nProvider } from './i18n/I18nProvider';
-import './styles.css';
+import './essay/essay.css';
 
 const options = parseUrlOptions(window.location.search);
 document.documentElement.lang = options.lang;

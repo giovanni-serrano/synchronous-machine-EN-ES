@@ -73,7 +73,13 @@ src/
     machine/          StatorDrawing (shared stator + coil axes), MachineView, MachineLab, EnergyFlowDiagram (Phases 3–4)
     power/            PowerPanel, PowerTriangle + triangleLayout (pure, tested), CurrentPanel / CurrentByPf (Phase 5)
     phasor/           PhasorPanel, PhasorDiagram + phasorLayout (pure, tested) (Phase 6)
-  App.tsx, main.tsx
+  essay/              The explorable essay (default view): Essay.tsx, essay.css, theme.ts (palette),
+    canvas/           useCanvasFigure (loop, visibility, sizing), draw.ts (glow arrows, stator, gap field)
+    figures/          HookFigure, OneCoilFigure, ThreeCoilsFigure, statorScene, FigureFrame, useScrubTime
+    OgCard.tsx        Open Graph card (?view=og)
+  LabApp.tsx          The Phase 2–6 lab (?view=lab, lazy-loaded) — to be restyled as the essay's last section
+  App.tsx, main.tsx   View routing (essay / lab / og), providers
+scripts/              Browser checks with playwright-core + installed Edge: layout stability, perf, captures, OG, video
 tests/                Vitest: physics, i18n, infrastructure, render smoke test
 docs/                 Documentation (English)
 ```

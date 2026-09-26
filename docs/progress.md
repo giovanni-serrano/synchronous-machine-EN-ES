@@ -13,10 +13,11 @@ Architecture: [architecture.md](architecture.md).
 | 3 | Machine view (2.5D cross-section) | **Done** |
 | 4 | Motor / generator | **Done** |
 | 5 | P, Q, S and PF | **Done** |
-| 6 | Phasors | **Done** — **CP2 reached** (awaiting feedback) |
-| 7 | Excitation, δ, stability, V curves (+ qualitative transients) | Not started |
-| 8 | Guided lesson | Not started |
-| 9 | Presentation mode and social clips | Not started |
+| 6 | Phasors | **Done** — CP2: physics approved, experience rejected |
+| 2b | **Explorable essay** (replaces 7–8): vertical slice hook + §2 + §3, scroll fix, layout test, publishing prepared | **Done — CP2b reached** (awaiting review) |
+| 7 | Excitation, δ, stability, V curves → essay §11–12 and the lab | Not started |
+| 8 | Guided lesson → replaced by the essay (docs/experience-redesign.md) | Replaced |
+| 9 | Presentation mode and social clips (built on the essay sections) | Not started |
 | 10 | Polish and validation | Not started |
 
 Checkpoints: **CP1** after Phase 1 (mandatory, wait for approval before building the interface).
@@ -176,6 +177,34 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
   moment on the under-excitation limit — see storyboard.md, scene 12.
 - Polish backlog (Phase 10): the phasor labels are small at phone width too.
 
+## Checkpoint 2 — outcome
+
+Physics approved; experience rejected (low contrast, dashboard look, no hook, everything at once, scroll jumping). New
+direction: a Ciechanowski-style explorable essay, mobile first, for sharing on X — see
+[experience-redesign.md](experience-redesign.md). `src/physics`, the conventions and all physics tests are unchanged.
+
+## Checkpoint 2b — vertical slice delivered
+
+- **Essay shell** (`src/essay/`): hook, §2 *One coil*, §3 *Three coils*, "Next: the rotor" with a link to the lab
+  (`?view=lab`, lazy-loaded chunk). EN written natively, ES adapted; all copy in the typed dictionaries (`essay`
+  namespace, parity tests).
+- **Figures in canvas** (`useCanvasFigure`): fixed-aspect boxes, one rAF loop per figure, paused off-screen and in hidden
+  tabs, DPR ≤ 2, reduced motion = paused + scrub. Pointer drag on the wave strip (`touch-action: pan-y` keeps page
+  scroll), tap on a coil, keyboard (space, ← →, 1 2 3), play/pause button.
+- **Physics reused**: `PHASE_AXES`, `windingConductors`, `statorField`, `sinusoidalGapField`. The three-coil trail is the
+  exact locus of the sum over the last cycle (circle / ellipse / line), not a frame history.
+- **Star moment in the slice**: "three pulses become one rotation" (§3).
+- **Scroll bug**: cause found with Playwright — scroll anchoring picked a rotating SVG element and re-scrolled every
+  frame (up to 130 px/s on phones) while the page height never changed. Fixed with `overflow-anchor: none` on figures
+  (essay) and on SVG (lab). `npm run test:layout` checks height and scrollY while animating, phone and desktop, EN/ES
+  and the lab; mutation check: removing the lab fix makes it fail (scrollY 366 → 499 → 375 px).
+- **Performance** (`npm run perf`, slow 4G, CPU ×4): FCP 1.2 s, LCP 1.2 s, 112 KB transferred.
+- **Publishing prepared** (not published): Pages base path, OG image 1200 × 630, meta tags, manual workflow —
+  [publishing.md](publishing.md).
+- Scripts: `capture.mjs` (review screenshots), `record.mjs` (phone video of a star moment), `make-og.mjs`, `perf.mjs`,
+  `check-layout-stability.mjs` — all with `playwright-core` and the installed Edge.
+- Tests: 170 (physics unchanged; smoke tests now cover the essay and the lab).
+
 ## Decisions log
 
 | # | Decision | Where |
@@ -204,6 +233,9 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D23 | In the triangle θ is labelled by its letter only; its value is in the PF line (labels would otherwise be as large as the triangle). | PowerTriangle.tsx |
 | D24 | Phasor diagram in the right column between controls and powers: δ is then on screen with the cross-section, and θ with the triangle. The PF current bars moved under the energy flow to balance the columns. | MachineLab.tsx |
 | D25 | Both θ and δ arcs use the accent colour in every view; the letter label, not the colour, tells them apart. | LinkedArc.tsx |
+| D26 | Essay figures are canvas, not SVG: no DOM change per frame (layout can't move), cheap glow, 60 fps on phones. | src/essay/canvas |
+| D27 | Palette per concept (experience-redesign.md §3); hues deliberately brighter than the validator's dark fill band — they are strokes and glows on near-black, labels stay neutral. | src/essay/theme.ts |
+| D28 | Hook headline "Three coils that never move make a magnet that spins." (alternatives in experience-redesign.md §5). | en.ts |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

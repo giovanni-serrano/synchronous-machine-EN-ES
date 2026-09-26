@@ -1,0 +1,381 @@
+/*
+ * Essay styles (docs/experience-redesign.md §3). Mobile first (390 px), then wider.
+ * Rules that keep the layout still while figures animate: fixed-aspect figure boxes, canvas drawing,
+ * overflow-anchor: none on figures (scroll anchoring must never pick a moving element), no text that changes length.
+ */
+
+@import '@fontsource-variable/source-serif-4/wght.css';
+@import '@fontsource-variable/source-serif-4/wght-italic.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+:root {
+  color-scheme: dark;
+  --ink: #0d0f12;
+  --text: #f4f1ea;
+  --text-dim: #b9b4a8;
+  --text-faint: #8e897f;
+  --hairline: #3a3f47;
+  --stator: #40c4ff;
+  --rotor: #ff9a4a;
+  --serif: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--ink);
+}
+
+.essay {
+  min-height: 100vh;
+  color: var(--text);
+  background: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.6;
+  /* reading measure ≈ 65 characters, in px so headings and small text share the same column */
+  --measure: 646px;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 720px) {
+  .essay {
+    font-size: 21px;
+    --measure: 714px;
+  }
+}
+
+.essay *,
+.essay *::before,
+.essay *::after {
+  box-sizing: border-box;
+}
+
+.essay .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.essay i {
+  font-style: italic;
+}
+
+.essay sub {
+  font-size: 0.68em;
+  line-height: 0;
+  vertical-align: -0.28em;
+  font-style: normal;
+}
+
+/* Reading column: about 65 characters */
+.prose {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+p.prose {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.essay a {
+  color: var(--text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: var(--text-faint);
+}
+
+.essay a:hover {
+  text-decoration-color: var(--text);
+}
+
+.essay :focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* ---------- Hook ---------- */
+
+.hook {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 48px 40px;
+}
+
+.fig.fig--hook {
+  width: min(100%, 62svh);
+  margin: 0 auto 8px;
+}
+
+.hook__text {
+  width: 100%;
+}
+
+.hook__byline {
+  margin: 0 0 0.5em;
+  color: var(--text-faint);
+  font-size: 0.85em;
+}
+
+.hook__title {
+  margin: 0 0 0.45em;
+  font-size: clamp(2rem, 8.2vw, 3.6rem);
+  line-height: 1.08;
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.hook__standfirst {
+  margin: 0 0 1.1em;
+  color: var(--text-dim);
+}
+
+.hook__scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  text-decoration: none !important;
+  color: var(--text-dim) !important;
+  font-style: italic;
+}
+
+.hook__scroll svg {
+  width: 1.1em;
+  height: 1.1em;
+  animation: hook-nudge 2.8s ease-in-out infinite;
+}
+
+@keyframes hook-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@media (min-width: 1000px) {
+  .hook {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-inline: 32px;
+  }
+  .fig.fig--hook {
+    width: min(100%, 82svh);
+    margin: 0;
+  }
+  .hook__text.prose {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/* ---------- Language switch: plain text, top right ---------- */
+
+.essay-lang {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 2;
+}
+
+.essay-lang button {
+  padding: 8px 4px;
+  font: inherit;
+  font-size: 0.8em;
+  font-style: italic;
+  color: var(--text-dim);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* ---------- Sections ---------- */
+
+.essay-section {
+  padding-block: 64px 16px;
+}
+
+.hook + main > .essay-section:first-child {
+  padding-top: 32px;
+}
+
+@media (min-width: 720px) {
+  .essay-section {
+    padding-block: 112px 24px;
+  }
+}
+
+.essay-section h2 {
+  margin-top: 0;
+  margin-bottom: 0.7em;
+  font-size: 1.65em;
+  line-height: 1.15;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+}
+
+.essay .anchor {
+  text-decoration: none;
+}
+
+.question {
+  font-style: italic;
+  font-size: 1.1em;
+}
+
+.formula {
+  font-size: 0.86em;
+  color: var(--text-dim);
+  padding-left: 40px;
+  background: linear-gradient(var(--hairline), var(--hairline)) 20px 0 / 2px 100% no-repeat;
+}
+
+/* ---------- Figures ---------- */
+
+.fig {
+  margin: 2em auto 1.6em;
+  overflow-anchor: none;
+}
+
+.fig__box {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+  overflow-anchor: none;
+}
+
+.fig--hook .fig__box {
+  max-width: none;
+}
+
+.fig__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fig__canvas--interactive {
+  cursor: pointer;
+}
+
+.fig__canvas:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+.fig__play {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--text);
+  background: rgba(13, 15, 18, 0.7);
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.fig__play svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fig__caption {
+  max-width: var(--measure);
+  margin: 12px auto 0;
+  padding-inline: 20px;
+  font-size: 0.84em;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--text-dim);
+}
+
+.fig__note {
+  color: var(--text-faint);
+}
+
+/* ---------- End of the slice ---------- */
+
+.essay-next {
+  padding-bottom: 32px;
+}
+
+.essay-footer {
+  padding-block: 56px 48px;
+  font-size: 0.8em;
+  color: var(--text-faint);
+}
+
+.essay-footer p {
+  margin: 0 0 0.4em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hook__scroll svg {
+    animation: none;
+  }
+}
+
+/* ---------- Open Graph card (?view=og, 1200 × 630) ---------- */
+
+.og-card {
+  width: 1200px;
+  height: 630px;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 590px 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 64px 20px 20px;
+  overflow: hidden;
+}
+
+.og-card .fig.fig--hook {
+  width: 590px;
+  margin: 0;
+}
+
+.og-card__title {
+  margin: 0 0 0.4em;
+  font-size: 58px;
+  line-height: 1.06;
+  font-weight: 640;
+  letter-spacing: -0.015em;
+}
+
+.og-card__sub {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 26px;
+  font-style: italic;
+}

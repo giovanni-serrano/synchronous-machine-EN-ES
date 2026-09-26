@@ -296,6 +296,63 @@ export const en = {
     },
   },
 
+  essay: {
+    docTitle: 'Three coils, one spinning magnet — the synchronous machine',
+    byline: 'An interactive essay',
+    source: 'Physics after S. J. Chapman, Electric Machinery Fundamentals.',
+    hook: {
+      title: 'Three coils that never move make a magnet that spins.',
+      standfirst:
+        'Every generator on the grid turns in perfect step with all the others. And the very same machine can be a motor or a generator without changing a single wire. Let’s build one, piece by piece.',
+      scroll: 'Scroll to begin',
+      figureLabel:
+        'A synchronous machine turning slowly: a glow of magnetic field travels around the fixed stator, and the rotor follows it.',
+    },
+    oneCoil: {
+      title: 'One coil',
+      p1: 'Start with the part that never moves: the stator, a ring of iron with a coil of wire wound into it.',
+      p2: 'Push a current through the coil and it becomes a magnet. Its field points along the coil’s axis, straight across the ring.',
+      instruction: 'Drag along the wave to change the current.',
+      p3: 'Now let the current alternate, as it does on the grid. The field grows, shrinks, flips and comes back. It pulses along one line, but it never turns.',
+      question: 'So how do you make a field that spins?',
+      formula: 'The field follows the current: B ∝ i(t) = I_max cos ωt, always along the coil’s axis.',
+      figureLabel:
+        'Cross-section of a stator with one coil. The magnetic field across the ring points along the coil’s axis, and its length follows the current.',
+      current: 'current',
+      field: 'field',
+    },
+    threeCoils: {
+      title: 'Three coils',
+      p1: 'Add two more coils, each turned 120° from the last. Feed each one its own current, a third of a cycle behind the one before.',
+      p2: 'On its own, each coil still does the same thing: its field pulses along its own axis.',
+      instruction: 'Tap a coil to switch it off. Drag along the waves to move through time.',
+      p3: 'Now add the three fields tip to tail and watch the sum. It never shrinks. It just turns, smoothly, once per cycle of the current.',
+      p4: 'Nothing in the stator moves, yet the magnet spins. Switch a coil off and the circle collapses: it takes all three.',
+      formula: 'B_a + B_b + B_c = 1.5 B_max, pointing at angle ωt: a field of constant size turning at ω.',
+      speedNote: 'On a 60 Hz grid this field turns 60 times a second. Here it is slowed down {factor} times.',
+      figureLabel:
+        'Cross-section of a stator with three coils. Their pulsing fields add up to one field of constant strength that turns.',
+      sum: 'sum',
+      coilOff: 'Coil {phase} is off.',
+      coilOn: 'Coil {phase} is on.',
+    },
+    figure: {
+      play: 'Play',
+      pause: 'Pause',
+      keysTime: 'Keyboard: space plays or pauses; ← and → move through time.',
+      keysCoils: 'Keys 1, 2 and 3 switch the coils.',
+    },
+    next: {
+      title: 'Next: the rotor',
+      body: 'Drop a magnet into this spinning field and it chases it, then locks on. That is the next section. Until it is written, you can explore the complete machine.',
+      link: 'Explore the complete machine (preview)',
+    },
+    footer: {
+      license: 'Code MIT · text CC BY 4.0',
+      lang: 'Leer en español',
+    },
+  },
+
   machineControls: {
     title: 'Machine controls',
     shaftPower: 'Shaft power',

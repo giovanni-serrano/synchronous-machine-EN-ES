@@ -1,22 +1,25 @@
 # Máquina síncrona — Física visual de motores y generadores síncronos
 
-Un **laboratorio** web interactivo para entender, con intuición y con matemática, cómo funciona una máquina síncrona como
-**motor** y como **generador**: el campo giratorio, la velocidad síncrona, el ángulo de par δ y las potencias P, Q, S y el
-factor de potencia. También sirve como fuente de escenas para grabar un video educativo (modo presentación y clips cortos
-para redes).
+Un **ensayo interactivo** (una explicación explorable) sobre cómo funciona una máquina síncrona como **motor** y como
+**generador**: el campo giratorio, la velocidad síncrona, el ángulo de par δ y las potencias P, Q, S y el factor de
+potencia. La máquina se construye pieza por pieza, con una idea y una figura por sección; el laboratorio interactivo
+completo cierra el ensayo. Diseñado primero para el teléfono, para compartirse.
 
 Bilingüe: **inglés** (predeterminado) y **español** (`?lang=es`). La notación y las convenciones siguen a
 S. J. Chapman, *Máquinas eléctricas*.
 
-> **Estado: Fase 1 de 10.** El modelo físico, la arquitectura, la documentación y los idiomas están listos y probados. La
-> interfaz todavía no existe: la página muestra una tabla de escenarios predefinidos calculada directamente por el modelo.
+> **Estado: punto de control 2b.** El modelo físico y el laboratorio de las Fases 2–6 están listos y probados; la
+> presentación se está reconstruyendo como ensayo ([docs/experience-redesign.md](docs/experience-redesign.md)). El corte
+> vertical (gancho, *Una bobina*, *Tres bobinas*) es la página principal; el laboratorio está en `?view=lab`.
 
 ## Cómo ejecutarlo
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173/?lang=es
-npm test           # pruebas del modelo físico, idiomas e infraestructura
+npm test           # pruebas del modelo físico, idiomas, disposición y renderizado
+npm run test:layout  # ninguna animación puede mover la página (Playwright + Edge instalado)
+npm run perf       # presupuesto de carga en móvil: LCP < 3 s
 ```
 
 ## Modelo en breve

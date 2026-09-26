@@ -318,6 +318,63 @@ export const es: Dictionary = {
     },
   },
 
+  essay: {
+    docTitle: 'Tres bobinas, un imán que gira: la máquina síncrona',
+    byline: 'Un ensayo interactivo',
+    source: 'Física según S. J. Chapman, Máquinas eléctricas.',
+    hook: {
+      title: 'Tres bobinas que nunca se mueven crean un imán que gira.',
+      standfirst:
+        'Todos los generadores de una red giran al mismo compás. Y la misma máquina puede ser motor o generador sin cambiar un solo cable. Vamos a construir una, pieza por pieza.',
+      scroll: 'Desliza para empezar',
+      figureLabel:
+        'Una máquina síncrona girando despacio: un brillo de campo magnético recorre el estator fijo y el rotor lo sigue.',
+    },
+    oneCoil: {
+      title: 'Una bobina',
+      p1: 'Empieza por la parte que nunca se mueve: el estator, un anillo de hierro con una bobina de alambre enrollada en él.',
+      p2: 'Haz pasar una corriente por la bobina y se convierte en un imán. Su campo apunta a lo largo del eje de la bobina, de lado a lado del anillo.',
+      instruction: 'Arrastra a lo largo de la onda para cambiar la corriente.',
+      p3: 'Ahora deja que la corriente alterne, como en la red. El campo crece, se encoge, se invierte y regresa. Pulsa a lo largo de una línea, pero nunca gira.',
+      question: '¿Cómo se consigue entonces un campo que gire?',
+      formula: 'El campo sigue a la corriente: B ∝ i(t) = I_max cos ωt, siempre a lo largo del eje de la bobina.',
+      figureLabel:
+        'Corte de un estator con una bobina. El campo magnético atraviesa el anillo a lo largo del eje de la bobina, y su longitud sigue a la corriente.',
+      current: 'corriente',
+      field: 'campo',
+    },
+    threeCoils: {
+      title: 'Tres bobinas',
+      p1: 'Agrega dos bobinas más, cada una girada 120° respecto de la anterior. Alimenta cada una con su propia corriente, un tercio de ciclo detrás de la anterior.',
+      p2: 'Por separado, cada bobina sigue haciendo lo mismo: su campo pulsa a lo largo de su propio eje.',
+      instruction: 'Toca una bobina para apagarla. Arrastra a lo largo de las ondas para avanzar en el tiempo.',
+      p3: 'Ahora suma los tres campos, punta con cola, y mira el resultado. Nunca se encoge. Solo gira, suavemente, una vez por cada ciclo de la corriente.',
+      p4: 'Nada se mueve en el estator y, aun así, el imán gira. Apaga una bobina y el círculo se aplasta: hacen falta las tres.',
+      formula: 'B_a + B_b + B_c = 1.5 B_max, apuntando al ángulo ωt: un campo de tamaño constante que gira a ω.',
+      speedNote: 'En una red de 60 Hz este campo da 60 vueltas por segundo. Aquí va {factor} veces más lento.',
+      figureLabel:
+        'Corte de un estator con tres bobinas. Sus campos pulsantes se suman en un solo campo de intensidad constante que gira.',
+      sum: 'suma',
+      coilOff: 'La bobina {phase} está apagada.',
+      coilOn: 'La bobina {phase} está encendida.',
+    },
+    figure: {
+      play: 'Reproducir',
+      pause: 'Pausar',
+      keysTime: 'Teclado: la barra espaciadora reproduce o pausa; ← y → avanzan en el tiempo.',
+      keysCoils: 'Las teclas 1, 2 y 3 encienden o apagan las bobinas.',
+    },
+    next: {
+      title: 'Lo que sigue: el rotor',
+      body: 'Deja caer un imán en este campo giratorio y lo persigue hasta engancharse. Esa es la próxima sección. Mientras se escribe, puedes explorar la máquina completa.',
+      link: 'Explorar la máquina completa (vista previa)',
+    },
+    footer: {
+      license: 'Código MIT · texto CC BY 4.0',
+      lang: 'Read in English',
+    },
+  },
+
   machineControls: {
     title: 'Controles de la máquina',
     shaftPower: 'Potencia en el eje',

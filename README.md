@@ -1,22 +1,28 @@
 # Synchronous Machine — Visual Physics of Synchronous Motors & Generators
 
-An interactive web **laboratory** for understanding, intuitively and mathematically, how a synchronous machine works as a
-**motor** and as a **generator**: the rotating field, synchronous speed, the torque angle δ, and the powers P, Q, S and the
-power factor. It is also a source of scenes for recording an educational video (presentation mode and short social clips).
+An **interactive essay** — an explorable explanation — on how a synchronous machine works as a **motor** and as a
+**generator**: the rotating field, synchronous speed, the torque angle δ, and the powers P, Q, S and the power factor.
+The machine is built up piece by piece, one idea and one figure per section; the complete interactive lab closes the
+essay. Designed mobile-first, for sharing.
 
 Bilingual: **English** (default) and **Spanish** (`?lang=es`). Notation and conventions follow
 S. J. Chapman, *Electric Machinery Fundamentals* / *Máquinas eléctricas*.
 
-> **Status: Phase 1 of 10** — physics model, architecture, docs and i18n are in place and tested. The interface is not
-> built yet; the page shows a table of predefined scenarios read straight from the model. See [docs/progress.md](docs/progress.md).
+> **Status: checkpoint 2b** — physics model and the Phase 2–6 lab are done and tested; the presentation is being rebuilt
+> as an essay ([docs/experience-redesign.md](docs/experience-redesign.md)). The vertical slice (hook, *One coil*,
+> *Three coils*) is the default page; the lab is at `?view=lab`. See [docs/progress.md](docs/progress.md).
 
 ## Run
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173  (add ?lang=es for Spanish)
-npm test           # Vitest: physics, i18n, infrastructure
+npm test           # Vitest: physics, i18n, layouts, render smoke tests
 npm run build      # typecheck + production build
+npm run test:layout  # no animation may move the page (Playwright + installed Edge; phone and desktop)
+npm run perf       # mobile load budget (slow 4G, CPU ×4): LCP < 3 s
+npm run capture -- http://localhost:5173/ captures   # review screenshots (390 px and desktop, EN/ES)
+npm run og         # regenerate the Open Graph image public/og.png
 ```
 
 Requires Node 22.12+ (Vitest 5); developed on Node 24.
@@ -49,6 +55,7 @@ Details: [docs/architecture.md](docs/architecture.md)
 | Parameter | Values | Purpose |
 |---|---|---|
 | `lang` | `en` (default), `es` | Language |
+| `view` | `lab` | The complete lab instead of the essay (`og` renders the social card) |
 | `presentation` | `true` | Cinematic mode for recording (Phase 9) |
 | `scene` | `1`–`15` | Start at a given lesson scene (Phase 8–9) |
 | `aspect` | `16x9` (default), `1x1`, `9x16` | Recording aspect ratio (Phase 9) |

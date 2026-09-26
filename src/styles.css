@@ -873,3 +873,17 @@ button {
   font-weight: 700;
   font-size: 14px;
 }
+
+/* Scroll anchoring must never pick an animated SVG element (it made the page jump every frame on phones). */
+svg {
+  overflow-anchor: none;
+}
+
+.app__back {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+}
+
+.app__back a {
+  color: var(--text-dim);
+}
