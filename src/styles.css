@@ -1,0 +1,136 @@
+/* Base tokens. The per-quantity palette (phases a/b/c, V_φ, I_A, E_A, P, Q, S) arrives with the
+   first visualizations and will live in src/ui/theme.ts. */
+:root {
+  --bg: #0d1014;
+  --surface: #151a20;
+  --line: #262e38;
+  --text: #e6e9ed;
+  --text-dim: #8d97a3;
+  --accent: #e8b04a;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-num: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.45;
+}
+
+sub {
+  font-size: 0.72em;
+}
+
+.phase1 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+.phase1__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.phase1 h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.phase1__subtitle {
+  margin: 4px 0 0;
+  color: var(--text-dim);
+}
+
+.lang-switch {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-switch button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lang-switch button[aria-pressed='true'] {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.phase1__badge {
+  margin: 28px 0 4px;
+  font-family: var(--font-num);
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.phase1__intro {
+  margin: 0 0 20px;
+  color: var(--text-dim);
+  max-width: 70ch;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  background: var(--surface);
+  color: var(--text-dim);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+td small {
+  color: var(--text-dim);
+}
+
+.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.phase1__assumptions {
+  margin: 20px 0 0;
+  padding-left: 18px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
