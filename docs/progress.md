@@ -13,7 +13,7 @@ Architecture: [architecture.md](architecture.md).
 | 3 | Machine view (2.5D cross-section) | **Done** |
 | 4 | Motor / generator | **Done** |
 | 5 | P, Q, S and PF | **Done** |
-| 6 | Phasors | Not started |
+| 6 | Phasors | **Done** — **CP2 reached** (awaiting feedback) |
 | 7 | Excitation, δ, stability, V curves (+ qualitative transients) | Not started |
 | 8 | Guided lesson | Not started |
 | 9 | Presentation mode and social clips | Not started |
@@ -147,7 +147,34 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
   of 15 power tests fail. 160 tests passing.
 - Verified in Edge: motor 0.70 lagging (EN), motor 0.90 leading (ES), desktop 1400 px and 390 px without overflow.
 - Polish backlog (Phase 10): the PF bar labels are also small at phone width.
-- Next (Phase 6): dynamic phasor diagram linked to the machine and the triangle.
+
+## Phase 6 — delivered
+
+- **Phasor diagram** (right column, between the controls and the powers panel), recomputed from
+  `presentOperatingPoint()` on every change: V_φ on the positive real axis; E_A, I_A, jX_S I_A in the machine /
+  triangle colours (V_φ light, E_A orange, I_A aqua, jX_S I_A grey dashed). The jX_S I_A arrow closes Chapman's equation
+  tip-to-tail in the drawing convention (generator: V_φ → E_A; motor: E_A → V_φ). Voltages share one scale, I_A has its
+  own; the scale steps down (×0.75, …) only if a phasor would leave the plot; user zoom ×1 / ×1.5 / ×2.
+- Beside it: the active equation, the convention indicator, magnitudes (V_φ, E_A, I_A, X_S I_A) and δ / θ with
+  leads / lags. Toggles: each vector, names, angles.
+- θ is drawn only in the active mode's convention (PF is defined there); with a locked drawing convention a note says so.
+- Note on the conjugate: a lagging I_A is below V_φ while lagging Q is up in the triangle (S = 3 V_φ I_A*).
+- **Linked angles** (`LinkedArc`, shared `AngleLink` state in MachineLab): hovering or focusing θ lights θ in the
+  phasor diagram and the triangle; δ lights δ in the phasor diagram, the cross-section and the 4-pole inset. Works both
+  ways, with the keyboard too (arcs are focusable buttons with accessible names).
+- **Layout**: right column = controls, phasors, powers; left column = cross-section, energy flow, "same P, lower PF"
+  bars; full-width readouts strip below. Column bottoms at 1400 px: 1882 / 1901 px; 1920 px: 1918 / 1907; 1280 px: 138 px
+  apart. Phone order: cross-section, controls, energy flow, phasors, powers, current bars, readouts; no overflow at 390 px.
+- **Performance fix**: the steady state (`solveMachine`, presentation, triangle, energy flow) is memoised on the inputs
+  and the phasor / power / current / energy-flow panels are `memo` components, so animation frames only redraw the
+  cross-section. Found while screenshotting: with Q ≠ 0 every frame re-ran every label placer (5 s of virtual time took
+  27 s in headless Edge; now 1.3 s).
+- Tests: phasor geometry over the slider range with automatic and both locked conventions (V_φ horizontal, tip-to-tail
+  closure, jX_S I_A ⟂ I_A, labels without overlaps and θ / δ within 50 px of their arcs, θ only in the mode convention,
+  scale steps); linked highlights per view. 167 tests passing.
+- Noted for Phase 7 (author's request): the 0.70-lagging case at 100 kW (P / P_max = 99 %) becomes an explicit lesson
+  moment on the under-excitation limit — see storyboard.md, scene 12.
+- Polish backlog (Phase 10): the phasor labels are small at phone width too.
 
 ## Decisions log
 
@@ -175,6 +202,8 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D21 | The power triangle is drawn in the active mode's convention (P ≥ 0, up = Q > 0 = lagging), like PF; the readouts strip shows P and Q as magnitudes with delivers/absorbs (grid view). | presentation.ts, PowerPanel.tsx |
 | D22 | Operating-point readouts form a full-width strip under both columns; playback sits under the cross-section. | MachineLab.tsx |
 | D23 | In the triangle θ is labelled by its letter only; its value is in the PF line (labels would otherwise be as large as the triangle). | PowerTriangle.tsx |
+| D24 | Phasor diagram in the right column between controls and powers: δ is then on screen with the cross-section, and θ with the triangle. The PF current bars moved under the energy flow to balance the columns. | MachineLab.tsx |
+| D25 | Both θ and δ arcs use the accent colour in every view; the letter label, not the colour, tells them apart. | LinkedArc.tsx |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

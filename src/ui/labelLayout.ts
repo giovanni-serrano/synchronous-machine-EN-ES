@@ -61,3 +61,21 @@ export function segmentObstacles(x1: number, y1: number, x2: number, y2: number,
     h: size,
   }));
 }
+
+/**
+ * Candidate centres around an anchor: the preferred direction first, then fanning out in 22.5° steps, at growing gaps
+ * between the anchor and the nearest edge of the box.
+ */
+export function ring(ax: number, ay: number, prefAngle: number, bw: number, bh: number, gaps = [5, 10, 17, 26, 38, 52]): [number, number][] {
+  const out: [number, number][] = [];
+  for (const g of gaps)
+    for (let k = 0; k < 16; k++) {
+      const step = Math.ceil(k / 2) * (k % 2 ? 1 : -1); // 0, +1, −1, +2, −2, …
+      const ang = prefAngle + (step * Math.PI) / 8;
+      const c = Math.cos(ang);
+      const sn = Math.sin(ang);
+      const ext = (Math.abs(c) * bw) / 2 + (Math.abs(sn) * bh) / 2;
+      out.push([ax + (g + ext) * c, ay + (g + ext) * sn]);
+    }
+  return out;
+}

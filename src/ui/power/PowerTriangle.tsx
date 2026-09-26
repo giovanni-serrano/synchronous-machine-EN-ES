@@ -8,6 +8,7 @@ import type { PowerTriangle as Triangle } from '../../physics';
 import { useI18n } from '../../i18n/I18nProvider';
 import { SvgSymbolText } from '../SymbolText';
 import { Arrow } from '../svg/Arrow';
+import { LinkedArc, type AngleLink } from '../svg/LinkedArc';
 import { COLORS } from '../theme';
 import type { Box } from '../labelLayout';
 import { ORIGIN, TRI_H, TRI_W, triangleLayout, type TriangleLabels } from './triangleLayout';
@@ -36,7 +37,17 @@ function Label({ box, text, className = 'svg-label' }: { box: Box | undefined; t
   );
 }
 
-export function PowerTriangle({ tri, ratedS }: { tri: Triangle; ratedS: number }) {
+export function PowerTriangle({
+  tri,
+  ratedS,
+  link = null,
+  onLink = () => {},
+}: {
+  tri: Triangle;
+  ratedS: number;
+  link?: AngleLink;
+  onLink?(link: AngleLink): void;
+}) {
   const { d, fmt } = useI18n();
   const text = triangleTexts(tri, ratedS, fmt, d.powers.rated);
   const l = triangleLayout(tri.p / ratedS, tri.q / ratedS, text);
@@ -79,13 +90,16 @@ export function PowerTriangle({ tri, ratedS }: { tri: Triangle; ratedS: number }
       <Arrow x1={o.x} y1={o.y} x2={pTip.x} y2={pTip.y} color={COLORS.p} width={3.5} />
       <Arrow x1={pTip.x} y1={pTip.y} x2={sTip.x} y2={sTip.y} color={COLORS.q} width={3} dashed />
       <Arrow x1={o.x} y1={o.y} x2={sTip.x} y2={sTip.y} color={COLORS.s} width={3} />
-      {l.theta && <path d={arc(l.theta.r, l.theta.from, l.theta.to)} fill="none" stroke={COLORS.accent} strokeWidth={2} />}
       <circle cx={ORIGIN.x} cy={ORIGIN.y} r={3} fill={COLORS.s} />
 
       <Label box={l.labels.get('p')} text={text.p} />
       <Label box={l.labels.get('q')} text={text.q} />
       <Label box={l.labels.get('s')} text={text.s} className="svg-label svg-label--em" />
-      {l.theta && <Label box={l.labels.get('theta')} text={text.theta} className="svg-label svg-label--delta" />}
+      {l.theta && (
+        <LinkedArc d={arc(l.theta.r, l.theta.from, l.theta.to)} id="theta" link={link} onLink={onLink} label={d.powers.thetaAria} width={2}>
+          <Label box={l.labels.get('theta')} text={text.theta} className="svg-label svg-label--delta" />
+        </LinkedArc>
+      )}
     </svg>
   );
 }

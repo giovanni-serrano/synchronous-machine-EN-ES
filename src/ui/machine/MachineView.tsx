@@ -15,6 +15,7 @@ import { useI18n } from '../../i18n/I18nProvider';
 import type { Box } from '../labelLayout';
 import { SvgSymbolText } from '../SymbolText';
 import { Arrow, polarXY } from '../svg/Arrow';
+import { LinkedArc, type AngleLink } from '../svg/LinkedArc';
 import { COLORS } from '../theme';
 import { GAP_MID, ROTOR, arcGap, leaderLine, machineLayout, rotorXY, type Segment } from './machineLayout';
 import { CoilAxesLayer, STATOR, StatorCoreAndCoils } from './StatorDrawing';
@@ -121,12 +122,16 @@ export function MachineView({
   show,
   highlight,
   onHighlight,
+  link = null,
+  onLink = () => {},
 }: {
   snap: MachineSnapshot;
   poles: number;
   show: MachineShow;
   highlight: PhaseId | null;
   onHighlight(phase: PhaseId | null): void;
+  link?: AngleLink;
+  onLink?(link: AngleLink): void;
 }) {
   const { d, fmt } = useI18n();
   const deltaValue = `δ = ${fmt.degrees(Math.abs(snap.deltaMech))}`;
@@ -170,8 +175,7 @@ export function MachineView({
 
       {/* δ between B_net and B_R, mechanical: arc under the vectors, label placed clear of everything */}
       {show.delta && layout.delta && (
-        <g>
-          <path d={arcPath(layout.delta.r, layout.delta.from, layout.delta.to)} fill="none" stroke={COLORS.accent} strokeWidth={2.6} />
+        <LinkedArc d={arcPath(layout.delta.r, layout.delta.from, layout.delta.to)} id="delta" link={link} onLink={onLink} label={d.machineLab.deltaAria} width={2.6}>
           <DeltaLeader delta={layout.delta} />
           <text x={layout.delta.label.x} y={layout.delta.label.y - 6} className="svg-label svg-label--delta" textAnchor="middle" dominantBaseline="central">
             {deltaValue}
@@ -179,7 +183,7 @@ export function MachineView({
           <text x={layout.delta.label.x} y={layout.delta.label.y + 8} className="svg-tick svg-tick--delta" textAnchor="middle" dominantBaseline="central">
             {d.machineLab.mechanicalShort}
           </text>
-        </g>
+        </LinkedArc>
       )}
 
       {/* Space vectors */}

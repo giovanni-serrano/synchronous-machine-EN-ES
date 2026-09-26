@@ -5,6 +5,7 @@
  * direction of flow (off with reduced motion), and a note says no net energy travels with it.
  */
 
+import { memo } from 'react';
 import type { EnergyFlow, FlowDirection } from '../../physics';
 import { useI18n } from '../../i18n/I18nProvider';
 import { SvgSymbolText } from '../SymbolText';
@@ -57,7 +58,7 @@ function FlowArrow({
   );
 }
 
-export function EnergyFlowDiagram({ flow, ratedS }: { flow: EnergyFlow | null; ratedS: number }) {
+export const EnergyFlowDiagram = memo(function EnergyFlowDiagram({ flow, ratedS }: { flow: EnergyFlow | null; ratedS: number }) {
   const { d, fmt } = useI18n();
   // "delivers" (to the grid) means the arrow points from the machine toward the grid, i.e. to the left.
   const gridArrow = (dir: FlowDirection) => (dir === 'delivers' ? false : true);
@@ -132,4 +133,4 @@ export function EnergyFlowDiagram({ flow, ratedS }: { flow: EnergyFlow | null; r
       )}
     </svg>
   );
-}
+});

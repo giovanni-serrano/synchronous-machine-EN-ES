@@ -111,6 +111,10 @@ signed shaft-power slider and locks the drawing convention (selectable); the ind
 B_S, B_net, the energy-flow arrows and the "seen from the grid" summary. Only the drawn I_A / jX_S I_A phasors and the
 signed P, Q readouts of the presentation change with it.
 
+In the **phasor diagram** the jX_S I_A arrow closes the equation of the drawing convention tip-to-tail (generator: from
+the tip of V_φ to the tip of E_A; motor: from the tip of E_A to the tip of V_φ). θ is drawn there only when the drawing
+convention is the mode's own; with a locked, different convention the UI says that θ and PF are read in the readouts.
+
 ---
 
 ## 6. δ and the fields

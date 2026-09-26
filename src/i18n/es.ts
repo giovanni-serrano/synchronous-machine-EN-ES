@@ -273,6 +273,7 @@ export const es: Dictionary = {
     down: '−Q en adelanto',
     rated: 'S nominal',
     zoomNote: 'escala ×½',
+    thetaAria: 'Ángulo θ entre P y S (el mismo θ que entre V_φ e I_A)',
     pfLine: '{pf} = {value} · {kind}',
     upMeans: {
       motor: 'Convención de motor (modo activo): Q > 0 es Q absorbida de la red = en retraso.',
@@ -292,6 +293,29 @@ export const es: Dictionary = {
     currentRated: 'nominal',
     currentNote:
       'En retraso o en adelanto, el mismo FP exige la misma corriente. Q no transporta energía neta, pero su corriente calienta los devanados.',
+  },
+
+  phasors: {
+    title: 'Diagrama fasorial',
+    planeLabel: 'Diagrama fasorial: V_φ, E_A, I_A y jX_S I_A',
+    equation: {
+      generator: 'E_A = V_φ + jX_S I_A',
+      motor: 'V_φ = E_A + jX_S I_A',
+    },
+    zoom: 'Zoom',
+    names: 'Nombres',
+    angles: 'Ángulos',
+    scaleStep: 'escala ×{value}',
+    scaleNote: 'Fasores eficaces que giran juntos a ω, congelados con V_φ sobre el eje real. Los voltajes comparten una escala; I_A tiene la suya.',
+    hoverNote: 'Pasa el mouse o enfoca θ o δ: el mismo ángulo se ilumina en el triángulo (θ) y en la máquina (δ).',
+    conjugateNote:
+      'Una I_A en retraso queda debajo de V_φ, pero la Q en retraso apunta hacia arriba en el triángulo: S = 3 V_φ I_A* usa el conjugado de I_A.',
+    thetaLocked:
+      'La convención de dibujo está fija: θ y el FP se miden en la convención del modo activo (ver las lecturas).',
+    angleAria: {
+      delta: 'Ángulo δ entre E_A y V_φ',
+      theta: 'Ángulo θ entre V_φ e I_A',
+    },
   },
 
   machineControls: {
@@ -335,6 +359,7 @@ export const es: Dictionary = {
     rotorPolesNote: 'El polo N del rotor está sobre B_R; lo produce el devanado de campo (I_F).',
     rotation: 'La flecha curva fuera del estator indica el sentido de giro (antihorario).',
     fieldCurrentShort: 'corriente de campo I_F',
+    deltaAria: 'Ángulo δ entre B_R y B_net (el mismo δ que entre E_A y V_φ)',
     insetTitle: 'B_R + B_S = B_net · grados eléctricos',
     insetNote:
       'El mismo instante, en grados eléctricos, donde los tres campos se suman punta con cola. Gira cada flecha −90° y obtienes E_A, V_φ y −jX_S I_A: el diagrama fasorial.',

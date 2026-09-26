@@ -1,9 +1,9 @@
 /**
- * Phase 5 panel (brief §5.8, §5.9): power triangle linked to the machine, S = P + jQ explained, power-factor targets
- * that solve I_F at the present P, and the current needed at each PF. Everything comes from the live MachineState.
+ * Phase 5 panel (brief §5.8, §5.9): power triangle linked to the machine, S = P + jQ explained, and power-factor
+ * targets that solve I_F at the present P (the current needed at each PF is in CurrentPanel). Everything comes from the live MachineState.
  */
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import {
   fieldFromInternalVoltage,
   solveFieldForPowerFactor,
@@ -16,7 +16,7 @@ import { interpolate } from '../../i18n';
 import { useI18n } from '../../i18n/I18nProvider';
 import { Segmented } from '../controls/Segmented';
 import { SymbolText } from '../SymbolText';
-import { CurrentByPf } from './CurrentByPf';
+import type { AngleLink } from '../svg/LinkedArc';
 import { PowerTriangle } from './PowerTriangle';
 
 export const PF_TARGETS = [
@@ -32,23 +32,21 @@ export function matchingTarget(tri: Triangle): TargetId | undefined {
   return PF_TARGETS.find((t) => Math.abs(tri.pf - t.pf) < 0.002 && (t.kind === 'unity' || tri.pfKind === t.kind))?.id;
 }
 
-export function PowerPanel({
+export const PowerPanel = memo(function PowerPanel({
   params,
   inputs,
   tri,
   grid,
-  vPhi,
-  iAMag,
-  iRated,
+  link,
+  onLink,
   onField,
 }: {
   params: MachineParams;
   inputs: MachineInputs;
   tri: Triangle | null;
   grid: GridView | null;
-  vPhi: number;
-  iAMag: number;
-  iRated: number;
+  link: AngleLink;
+  onLink(link: AngleLink): void;
   onField(iF: number): void;
 }) {
   const { d, fmt } = useI18n();
@@ -80,7 +78,7 @@ export function PowerPanel({
       {tri ? (
         <>
           <div className="powers__top">
-            <PowerTriangle tri={tri} ratedS={params.ratedS} />
+            <PowerTriangle tri={tri} ratedS={params.ratedS} link={link} onLink={onLink} />
             <div className="powers__summary">
               <p className="powers__pf">
                 <SymbolText text={interpolate(d.powers.pfLine, { pf: d.symbols.pfAbbrev, value: fmt.number(tri.pf, 2), kind: pfKindText })} />
@@ -125,15 +123,6 @@ export function PowerPanel({
             )}
           </div>
 
-          {hasLoad && (
-            <figure className="powers__current">
-              <figcaption className="inset__title">
-                {d.powers.currentTitle} · <SymbolText text={interpolate(d.powers.currentAxis, { p: fmt.power(Math.abs(tri.p), 'W') })} />
-              </figcaption>
-              <CurrentByPf pAbs={Math.abs(tri.p)} vPhi={vPhi} pfNow={tri.pf} iANow={iAMag} iRated={iRated} />
-              <p className="readouts__note">{d.powers.currentNote}</p>
-            </figure>
-          )}
         </>
       ) : (
         <p className="hint">
@@ -142,4 +131,4 @@ export function PowerPanel({
       )}
     </section>
   );
-}
+});

@@ -251,6 +251,7 @@ export const en = {
     down: '−Q leading',
     rated: 'rated S',
     zoomNote: 'scale ×½',
+    thetaAria: 'Angle θ between P and S (the same θ as between V_φ and I_A)',
     pfLine: '{pf} = {value} · {kind}',
     upMeans: {
       motor: 'Motor convention (active mode): Q > 0 is Q absorbed from the grid = lagging.',
@@ -270,6 +271,29 @@ export const en = {
     currentRated: 'rated',
     currentNote:
       'Lagging or leading, the same PF needs the same current. Q carries no net energy, but its current heats the windings.',
+  },
+
+  phasors: {
+    title: 'Phasor diagram',
+    planeLabel: 'Phasor diagram: V_φ, E_A, I_A and jX_S I_A',
+    equation: {
+      generator: 'E_A = V_φ + jX_S I_A',
+      motor: 'V_φ = E_A + jX_S I_A',
+    },
+    zoom: 'Zoom',
+    names: 'Names',
+    angles: 'Angles',
+    scaleStep: 'scale ×{value}',
+    scaleNote: 'RMS phasors turning together at ω, frozen with V_φ on the real axis. Voltages share one scale; I_A has its own.',
+    hoverNote: 'Hover or focus θ or δ: the same angle lights up in the triangle (θ) and in the machine (δ).',
+    conjugateNote:
+      'A lagging I_A sits below V_φ, yet lagging Q points up in the triangle: S = 3 V_φ I_A* uses the conjugate of I_A.',
+    thetaLocked:
+      'The drawing convention is locked: θ and the PF are measured in the convention of the active mode (see the readouts).',
+    angleAria: {
+      delta: 'Angle δ between E_A and V_φ',
+      theta: 'Angle θ between V_φ and I_A',
+    },
   },
 
   machineControls: {
@@ -313,6 +337,7 @@ export const en = {
     rotorPolesNote: 'The rotor’s N pole sits on B_R; the field winding (I_F) makes it.',
     rotation: 'The curved arrow outside the stator shows the direction of rotation (counterclockwise).',
     fieldCurrentShort: 'field current I_F',
+    deltaAria: 'Angle δ between B_R and B_net (the same δ as between E_A and V_φ)',
     insetTitle: 'B_R + B_S = B_net · electrical degrees',
     insetNote:
       'Same instant, in electrical degrees, where the three fields add tip to tail. Turn each arrow by −90° and you get E_A, V_φ and −jX_S I_A: the phasor diagram.',

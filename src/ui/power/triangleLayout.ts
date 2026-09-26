@@ -4,7 +4,7 @@
  * does not jump while sliders move; it zooms out ×½ only when Q or P would leave the plot.
  */
 
-import { placeLabels, segmentObstacles, type Box } from '../labelLayout';
+import { placeLabels, ring, segmentObstacles, type Box } from '../labelLayout';
 
 export const TRI_W = 320;
 export const TRI_H = 280;
@@ -46,24 +46,6 @@ export interface TriangleLayout {
   readonly labels: ReadonlyMap<keyof TriangleLabels, Box>;
   /** Obstacles used for placement (exposed for tests). */
   readonly obstacles: readonly Box[];
-}
-
-/**
- * Candidate centres around an anchor: the preferred direction first, then fanning out in 22.5° steps, at growing gaps
- * between the anchor and the nearest edge of the box.
- */
-function ring(ax: number, ay: number, prefAngle: number, bw: number, bh: number, gaps = [5, 10, 17, 26, 38, 52]): [number, number][] {
-  const out: [number, number][] = [];
-  for (const g of gaps)
-    for (let k = 0; k < 16; k++) {
-      const step = Math.ceil(k / 2) * (k % 2 ? 1 : -1); // 0, +1, −1, +2, −2, …
-      const ang = prefAngle + (step * Math.PI) / 8;
-      const c = Math.cos(ang);
-      const sn = Math.sin(ang);
-      const ext = (Math.abs(c) * bw) / 2 + (Math.abs(sn) * bh) / 2;
-      out.push([ax + (g + ext) * c, ay + (g + ext) * sn]);
-    }
-  return out;
 }
 
 const fits = (p: number, q: number, scale: number) =>

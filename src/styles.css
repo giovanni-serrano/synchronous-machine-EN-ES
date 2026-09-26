@@ -149,6 +149,9 @@ button {
   .lab__side > .panel:not(.panel--controls) {
     order: 1;
   }
+  .panel--current {
+    order: 2;
+  }
 }
 
 .panel {
@@ -730,9 +733,6 @@ button {
 }
 
 /* Operating point: full-width strip under both columns (brief §8) */
-.panel--readouts {
-  margin-top: 16px;
-}
 
 .readouts--strip {
   grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
@@ -770,6 +770,7 @@ button {
 }
 
 .triangle,
+.phasors,
 .pf-bars {
   display: block;
   width: 100%;
@@ -801,7 +802,74 @@ button {
   .powers__top {
     grid-template-columns: minmax(0, 1fr);
   }
-  .triangle {
+  .triangle,
+  .phasors {
     max-width: 420px;
   }
+}
+
+/* ---------- Phase 6: phasors, linked angles, bottom row ---------- */
+
+.panel--readouts {
+  margin-top: 16px;
+}
+
+.pf-bars {
+  max-width: 480px;
+}
+
+.phasor-values {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-num);
+  font-size: 0.85rem;
+}
+
+.phasor-values .swatch {
+  display: inline-block;
+  width: 12px;
+  height: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+.phasor-values .swatch--dashed {
+  height: 0;
+  border-top: 3px dashed;
+  background: none;
+}
+
+.phasor-angle {
+  margin: 0;
+  padding: 1px 4px;
+  font-family: var(--font-num);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  border-left: 2px solid transparent;
+  cursor: default;
+}
+
+.phasor-angle.is-hot {
+  color: var(--text);
+  border-left-color: var(--accent);
+}
+
+.phasors__zoom {
+  margin-top: 4px;
+}
+
+/* Linked angle arcs: hover / focus shows the same angle in every view */
+.linked-arc {
+  cursor: pointer;
+  outline: none;
+}
+
+.linked-arc.is-hot .svg-label--delta,
+.linked-arc.is-hot .svg-tick--delta {
+  font-weight: 700;
+  font-size: 14px;
 }

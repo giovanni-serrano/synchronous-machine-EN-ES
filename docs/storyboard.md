@@ -81,6 +81,11 @@ Objective IDs refer to [learning-objectives.md](learning-objectives.md).
 - **Screen**: I_F slider at constant P; E_A tip on the constant-power line, I_A tip on its line; Q readout; grid view.
 - **Beats**: "Turn the field down: the machine borrows its magnetism from the grid." → "Just right: unity PF." → "Turn it up: the
   machine supplies magnetism and hands Q back." → "Motor or generator: over-excited delivers Q."
+- **Explicit moment — the under-excitation limit** (author's request, Phase 5 review): motor at 100 kW with the PF target
+  0.70 lagging. The model needs I_F = 4.4 A (E_A = 242.6 V) and lands at δ = 82.5°, P / P_max = 99 %: the "near the stability
+  limit" warning appears. Beat: "Asking for more lagging Q means less excitation — and less excitation lowers P_max. At
+  0.70 lagging this motor is one step from slipping a pole." Then lower I_F a little further to show loss of synchronism
+  (qualitative transient, Phase 7). Links scenes 9 (PF), 11 (stability) and 14 (left edge of the V curve).
 
 ### 13 · The complete phasor diagram — F6, F5, F4 (demo J)
 - **Screen**: V_φ, I_A, E_A, jX_S I_A, θ, δ; convention indicator; toggles; zoom.

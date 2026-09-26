@@ -7,11 +7,20 @@ import type { MachineSnapshot } from '../../animation/snapshot';
 import { useI18n } from '../../i18n/I18nProvider';
 import { SymbolText } from '../SymbolText';
 import { Arrow } from '../svg/Arrow';
+import { LinkedArc, type AngleLink } from '../svg/LinkedArc';
 import { COLORS } from '../theme';
 import { DeltaLeader, LabelAt, arcPath } from './MachineView';
 import { INSET_FRAME, sumInsetLayout } from './machineLayout';
 
-export function ElectricalSumInset({ snap }: { snap: MachineSnapshot }) {
+export function ElectricalSumInset({
+  snap,
+  link = null,
+  onLink = () => {},
+}: {
+  snap: MachineSnapshot;
+  link?: AngleLink;
+  onLink?(link: AngleLink): void;
+}) {
   const { d, fmt } = useI18n();
   const deltaText = `δ = ${fmt.degrees(Math.abs(snap.deltaElec))} ${d.machineLab.electricalShort}`;
   const l = sumInsetLayout(snap, 8 + deltaText.length * 5.6);
@@ -24,13 +33,12 @@ export function ElectricalSumInset({ snap }: { snap: MachineSnapshot }) {
       <svg viewBox={`${-r} ${-r} ${2 * r} ${2 * r}`} role="img" aria-label={d.machineLab.vectorSum}>
         <circle r={2.5} fill={COLORS.ink} />
         {l.delta && (
-          <g>
-            <path d={arcPath(l.delta.r, l.delta.from, l.delta.to)} fill="none" stroke={COLORS.accent} strokeWidth={2.2} />
+          <LinkedArc d={arcPath(l.delta.r, l.delta.from, l.delta.to)} id="delta" link={link} onLink={onLink} label={d.machineLab.deltaAria} width={2.2}>
             <DeltaLeader delta={l.delta} />
             <text x={l.delta.label.x} y={l.delta.label.y} className="svg-label svg-label--delta svg-label--small" textAnchor="middle" dominantBaseline="central">
               {deltaText}
             </text>
-          </g>
+          </LinkedArc>
         )}
         <Arrow x1={l.bNet.x1} y1={l.bNet.y1} x2={l.bNet.x2} y2={l.bNet.y2} color={COLORS.vPhi} width={3.6} head={11} />
         <Arrow x1={l.bR.x1} y1={l.bR.y1} x2={l.bR.x2} y2={l.bR.y2} color={COLORS.eA} width={3.6} head={11} />

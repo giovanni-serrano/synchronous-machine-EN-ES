@@ -65,12 +65,14 @@ src/
     theme.ts          Fixed colour per quantity (validated per panel; see file header)
     SymbolText.tsx    Dictionary text with subscripts (HTML and SVG versions)
     svg/Arrow.tsx     Arrow primitive, polar → SVG coordinates
+    svg/LinkedArc.tsx Angle arc whose highlight is shared across views (θ, δ)
     controls/         Segmented (radio group), ToggleChip (checkbox)
     icons.tsx         Transport icons
     controls/Transport.tsx  Shared play/step/speed controls and keyboard shortcuts
     fieldLab/         Phase 2: RotatingFieldLab, AirGapView, SpaceVectorDiagram, PhaseCurrentsPlot
     machine/          StatorDrawing (shared stator + coil axes), MachineView, MachineLab, EnergyFlowDiagram (Phases 3–4)
-    power/            PowerPanel, PowerTriangle + triangleLayout (pure, tested), CurrentByPf (Phase 5)
+    power/            PowerPanel, PowerTriangle + triangleLayout (pure, tested), CurrentPanel / CurrentByPf (Phase 5)
+    phasor/           PhasorPanel, PhasorDiagram + phasorLayout (pure, tested) (Phase 6)
   App.tsx, main.tsx
 tests/                Vitest: physics, i18n, infrastructure, render smoke test
 docs/                 Documentation (English)

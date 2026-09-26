@@ -4,7 +4,7 @@
  * All physics comes from solveMachine / presentOperatingPoint / energyFlow; the view reads a snapshot.
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   REFERENCE_MACHINE,
   SCENARIOS,
@@ -38,6 +38,9 @@ import { ElectricalSumInset } from './ElectricalSumInset';
 import { EnergyFlowDiagram } from './EnergyFlowDiagram';
 import { MachineView, type MachineShow } from './MachineView';
 import { PowerPanel } from '../power/PowerPanel';
+import { CurrentPanel } from '../power/CurrentPanel';
+import { PhasorPanel } from '../phasor/PhasorPanel';
+import type { AngleLink } from '../svg/LinkedArc';
 
 const M = REFERENCE_MACHINE;
 const RATINGS = deriveRatings(M);
@@ -61,6 +64,8 @@ export function MachineLab() {
   const [drawingConvention, setDrawingConvention] = useState<Convention>('generator');
   const [sweeping, setSweeping] = useState(false);
   const [highlight, setHighlight] = useState<PhaseId | null>(null);
+  // θ / δ highlighted in every view that draws it (phasors ↔ triangle, phasors ↔ machine)
+  const [link, setLink] = useState<AngleLink>(null);
   const [show, setShow] = useState<MachineShow>({ bR: true, bS: true, bNet: true, sum: true, delta: true, flux: true, axes: false });
   const clock = useAnimationClock(speed);
 
@@ -78,17 +83,23 @@ export function MachineLab() {
     return () => cancelAnimationFrame(raf);
   }, [sweeping]);
 
-  const state = solveMachine(M, inputs);
+  // Steady state: recomputed only when an input changes, not on every animation frame (the clock only moves the snapshot),
+  // so the memoised panels below skip the per-frame re-render.
+  const state = useMemo(() => solveMachine(M, inputs), [inputs]);
   const snap = machineSnapshot(M, state, clock.t);
   const convention: Convention = continuous ? drawingConvention : state.convention;
-  const pr = state.op ? presentOperatingPoint(state.op, state.convention, convention) : null;
-  const flow = state.op ? energyFlow(state.op) : null;
-  const tri = state.op ? powerTriangle(state.op, state.convention) : null;
+  const pr = useMemo(() => (state.op ? presentOperatingPoint(state.op, state.convention, convention) : null), [state, convention]);
+  const flow = useMemo(() => (state.op ? energyFlow(state.op) : null), [state]);
+  const tri = useMemo(() => (state.op ? powerTriangle(state.op, state.convention) : null), [state]);
   const pWord = flow ? { delivers: d.gridView.pDelivers, absorbs: d.gridView.pAbsorbs, none: d.gridView.pNone }[flow.grid.p.direction] : '';
   const qWord = flow ? { delivers: d.gridView.qDelivers, absorbs: d.gridView.qAbsorbs, none: d.gridView.qNone }[flow.grid.q.direction] : '';
   const step = stepper(clock, inputs.f);
   useTransportKeys(clock, step);
 
+  const setField = useCallback((iF: number) => {
+    setSweeping(false);
+    setInputs((prev) => ({ ...prev, iF }));
+  }, []);
   const set = (patch: Partial<MachineInputs>) => {
     setSweeping(false);
     setInputs((prev) => ({ ...prev, ...patch }));
@@ -129,8 +140,16 @@ export function MachineLab() {
             </figcaption>
             {snap ? (
               <div className={inputs.poles > 2 ? 'machine-wrap machine-wrap--inset' : 'machine-wrap'}>
-                <MachineView snap={snap} poles={inputs.poles} show={show} highlight={highlight} onHighlight={setHighlight} />
-                {inputs.poles > 2 && <ElectricalSumInset snap={snap} />}
+                <MachineView
+                  snap={snap}
+                  poles={inputs.poles}
+                  show={show}
+                  highlight={highlight}
+                  onHighlight={setHighlight}
+                  link={link}
+                  onLink={setLink}
+                />
+                {inputs.poles > 2 && <ElectricalSumInset snap={snap} link={link} onLink={setLink} />}
               </div>
             ) : (
               <div className="banner banner--critical" role="alert">
@@ -213,6 +232,8 @@ export function MachineLab() {
               </li>
             </ul>
           </section>
+
+          <CurrentPanel tri={tri} vPhi={state.vPhi} iAMag={pr ? pr.iAMag : 0} iRated={RATINGS.iRated} />
         </div>
 
         <div className="lab__side">
@@ -351,15 +372,24 @@ export function MachineLab() {
             </div>
           </section>
 
+          <PhasorPanel
+            pr={pr}
+            tri={tri}
+            modeConvention={state.convention}
+            vPhiRated={RATINGS.vPhiRated}
+            iRated={RATINGS.iRated}
+            link={link}
+            onLink={setLink}
+          />
+
           <PowerPanel
             params={M}
             inputs={inputs}
             tri={tri}
             grid={flow ? flow.grid : null}
-            vPhi={state.vPhi}
-            iAMag={pr ? pr.iAMag : 0}
-            iRated={RATINGS.iRated}
-            onField={(iF) => set({ iF })}
+            link={link}
+            onLink={setLink}
+            onField={setField}
           />
         </div>
       </div>
