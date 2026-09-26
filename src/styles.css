@@ -456,3 +456,68 @@ button {
   cursor: pointer;
   outline: none;
 }
+
+/* ---------- Tabs, machine lab ---------- */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  margin-top: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs button {
+  padding: 8px 14px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.tabs button[aria-selected='true'] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.machine {
+  max-width: 660px;
+  margin: 8px auto 0;
+}
+
+.chips--legend {
+  margin-top: 10px;
+}
+
+.panel h3.panel__title {
+  margin: 0 0 10px;
+}
+
+.scenario {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
+
+.scenario strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.readout dd small {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.banner {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid #d03b3b;
+  border-radius: 3px;
+}
+
+.lab__side .readouts {
+  margin-top: 14px;
+}

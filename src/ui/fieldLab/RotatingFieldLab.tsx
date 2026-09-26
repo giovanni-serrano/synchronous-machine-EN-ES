@@ -4,22 +4,15 @@
  * N–S pattern and the mechanical speed. Pause, frame step, scrubbing, individual contributions.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PHASES, synchronousSpeed, type PhaseId } from '../../physics';
-import {
-  SPEED_OPTIONS,
-  STEP_DEGREES,
-  electricalAngle,
-  slowMotionFactor,
-  stepClock,
-  type SpeedOption,
-} from '../../animation/clock';
+import { electricalAngle, slowMotionFactor, type SpeedOption } from '../../animation/clock';
 import { useAnimationClock } from '../../animation/useAnimationClock';
 import { interpolate } from '../../i18n';
 import { useI18n } from '../../i18n/I18nProvider';
 import { Segmented } from '../controls/Segmented';
 import { ToggleChip } from '../controls/ToggleChip';
-import { PauseIcon, PlayIcon, StepBackIcon, StepForwardIcon } from '../icons';
+import { TransportControls, stepper, useTransportKeys } from '../controls/Transport';
 import { SymbolText } from '../SymbolText';
 import { PHASE_COLORS, RESULTANT_COLOR } from '../theme';
 import { AirGapView } from './AirGapView';
@@ -29,9 +22,6 @@ import { SpaceVectorDiagram } from './SpaceVectorDiagram';
 const TWO_PI = 2 * Math.PI;
 const FREQUENCIES = [50, 60] as const;
 const POLE_OPTIONS = [2, 4, 6, 8] as const;
-
-const isInteractive = (el: EventTarget | null): boolean =>
-  el instanceof HTMLElement && /^(INPUT|BUTTON|SELECT|TEXTAREA|A)$/.test(el.tagName);
 
 export function RotatingFieldLab() {
   const { d, fmt } = useI18n();
@@ -51,10 +41,7 @@ export function RotatingFieldLab() {
   const pairs = poles / 2;
   const nSync = synchronousSpeed(f, poles);
 
-  const step = (deg: number) => {
-    clock.setPlaying(false);
-    clock.setT((t) => stepClock(t, f, deg));
-  };
+  const step = stepper(clock, f);
   const scrub = (angle: number) => {
     clock.setPlaying(false);
     clock.setT((t) => (Math.floor(electricalAngle(t, f) / TWO_PI) * TWO_PI + angle) / (TWO_PI * f));
@@ -65,18 +52,7 @@ export function RotatingFieldLab() {
     setF(next);
   };
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (isInteractive(e.target)) return;
-      if (e.key === ' ') {
-        e.preventDefault();
-        clock.setPlaying(!clock.playing);
-      } else if (e.key === 'ArrowRight') step(STEP_DEGREES);
-      else if (e.key === 'ArrowLeft') step(-STEP_DEGREES);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
+  useTransportKeys(clock, step);
 
   return (
     <section className="lab" aria-labelledby="field-lab-title">
@@ -162,25 +138,7 @@ export function RotatingFieldLab() {
       <div className="controls">
         <div className="controls__group">
           <span className="controls__label">{d.fieldLab.playback}</span>
-          <div className="transport">
-            <button type="button" onClick={() => step(-STEP_DEGREES)} aria-label={d.controls.stepBack} title={d.controls.stepBack}>
-              <StepBackIcon />
-            </button>
-            <button type="button" className="transport__play" onClick={() => clock.setPlaying(!clock.playing)}>
-              {clock.playing ? <PauseIcon /> : <PlayIcon />}
-              <span>{clock.playing ? d.controls.pause : d.controls.play}</span>
-            </button>
-            <button type="button" onClick={() => step(STEP_DEGREES)} aria-label={d.controls.stepForward} title={d.controls.stepForward}>
-              <StepForwardIcon />
-            </button>
-          </div>
-          <Segmented<SpeedOption>
-            label={d.controls.animationSpeed}
-            options={SPEED_OPTIONS.map((s) => ({ value: s, label: `×${fmt.number(s, s < 1 ? 2 : 0)}` }))}
-            value={speed}
-            onChange={setSpeed}
-          />
-          <p className="hint">{d.fieldLab.keyboardHint}</p>
+          <TransportControls clock={clock} step={step} speed={speed} onSpeed={setSpeed} />
         </div>
 
         <div className="controls__group">

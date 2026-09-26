@@ -279,6 +279,25 @@ Magnitudes are flux in per unit. At time t the whole set rotates by ωt (electri
 **Mechanical angles**: the angle you can see inside the machine is δ_mech = δ_elec / (poles/2). With 4 poles it is half the δ of
 the phasor diagram; the UI says so whenever it shows δ inside the machine.
 
+### 13.1 The machine view at time t (`src/animation/snapshot.ts`)
+
+`machineSnapshot(params, state, t)` adds the common rotation ωt to the steady state and nothing else:
+
+- electrical angle of each field = its phasor-frame angle + ωt; mechanical = electrical / (poles/2);
+- the rotor's N-pole axis is the B_R direction; rotor poles alternate N, S every π/(poles/2) mechanical;
+- instantaneous stator currents i_x = (|I_A| / I_rated)·cos(ωt + ∠I_A − axis_x), with the internal
+  (generator-convention) I_A, whose MMF is B_S (tested: the field of these currents points along B_S);
+- the air gap shows the **net** field, B_r = |B_net| cos((poles/2)θ − ∠B_net);
+- δ_mech = δ / (poles/2), drawn as an arc from B_net to B_R.
+
+Tested: angle(B_R) − angle(B_net) = δ at every t and for 2/4/6 poles; the rotor and all fields turn at exactly n_sync;
+generator → B_R ahead of B_net, motor → behind; no snapshot without a synchronous steady state.
+
+**Drawing notes.** For 2 poles the three arrows add as vectors (B_S can be drawn tip-to-tail from B_R). For more poles each
+arrow points at one N pole of its field pattern; the vector sum holds in electrical degrees and the UI says so. The field
+winding is drawn beside each pole body with the current direction that makes that pole N or S (right-hand rule, same
+convention as the stator coils). Salient poles are a drawing choice; the model is cylindrical-rotor (A2).
+
 ---
 
 ## 14. Transient scenes (qualitative; planned for Phase 7)
@@ -331,6 +350,7 @@ all inputs of §3 and all outputs of §3, field space vectors (flux pu), instant
 | Field-vector length scale | Flux pu → px. |
 | Vector exaggeration / glow (social clips) | Readability on phones. Declared per clip in storyboard.md. |
 | Colours, zoom, pan, camera moves | Presentation only. |
+| Machine-view vector scale (50 px per flux pu), flux-arrow scale, rotor proportions | Readability; field arrows keep their true ratios to each other. |
 | Salient pole shapes, number of drawn slots/coils | Recognisability; the math is cylindrical-rotor (A2). |
 | Swing-equation constants H, D | Qualitative transient scenes only (§14). |
 

@@ -14,7 +14,7 @@ benefits; not planned for v1). No state-management or i18n libraries.
 
 ## Data flow
 
-```
+```text
  URL (?lang, presentation, scene, aspect, clip)          user controls / scene script
             │                                                     │
             ▼                                                     ▼
@@ -34,7 +34,7 @@ benefits; not planned for v1). No state-management or i18n libraries.
 
 ## Directory layout
 
-```
+```text
 src/
   physics/            Pure model. No DOM, no React. Public API: physics/index.ts
     complex.ts        Complex arithmetic for phasors
@@ -51,7 +51,8 @@ src/
   animation/
     clock.ts          Physical time t, slow-motion scale, frame step, ωt (pure)
     useAnimationClock.ts  requestAnimationFrame hook around the clock
-                      (later: rotor angle, qualitative swing equation)
+                      (later: qualitative swing equation for transients)
+    snapshot.ts       Time-dependent picture of a steady state: field angles, rotor angle, phase currents
   i18n/
     en.ts             Source-of-truth dictionary (type Dictionary = typeof en)
     es.ts             Must match en exactly (TypeScript + tests)
@@ -66,7 +67,9 @@ src/
     svg/Arrow.tsx     Arrow primitive, polar → SVG coordinates
     controls/         Segmented (radio group), ToggleChip (checkbox)
     icons.tsx         Transport icons
+    controls/Transport.tsx  Shared play/step/speed controls and keyboard shortcuts
     fieldLab/         Phase 2: RotatingFieldLab, AirGapView, SpaceVectorDiagram, PhaseCurrentsPlot
+    machine/          StatorDrawing (shared stator + coil axes), MachineView, MachineLab (Phase 3)
   App.tsx, main.tsx
 tests/                Vitest: physics, i18n, infrastructure, render smoke test
 docs/                 Documentation (English)

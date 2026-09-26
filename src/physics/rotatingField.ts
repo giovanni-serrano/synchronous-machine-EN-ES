@@ -60,7 +60,14 @@ export const PHASES: readonly PhaseId[] = ['a', 'b', 'c'];
  * For 2 poles its peak lies along the resultant space vector.
  */
 export const airGapFluxDensity = (thetaMech: number, wt: number, poles: number, amplitude = 1): number =>
-  1.5 * amplitude * Math.cos((poles / 2) * thetaMech - wt);
+  sinusoidalGapField(thetaMech, wt, poles, 1.5 * amplitude);
+
+/**
+ * Radial flux density (outward positive) of any sinusoidally distributed field whose space vector has
+ * electrical angle `axisElec` and magnitude `amplitude`: B_r = amplitude · cos((poles/2)·θ_mech − axisElec).
+ */
+export const sinusoidalGapField = (thetaMech: number, axisElec: number, poles: number, amplitude: number): number =>
+  amplitude * Math.cos((poles / 2) * thetaMech - axisElec);
 
 export interface PoleFace {
   /** Mechanical angle of the pole-face centre, rad in [0, 2π). */

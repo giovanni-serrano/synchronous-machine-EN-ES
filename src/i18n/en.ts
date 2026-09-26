@@ -238,6 +238,36 @@ export const en = {
     pullOut: { hook: 'What happens when you ask for too much?' },
   },
 
+  nav: {
+    label: 'Sections',
+    machine: 'The machine',
+    field: 'Rotating field',
+  },
+
+  machineLab: {
+    title: 'The machine',
+    lead: 'Stator, rotor and three fields — B_R, B_S and B_net — turning together at synchronous speed.',
+    viewTitle: 'Cross-section',
+    operatingPoint: 'Operating point',
+    rotorField: 'Rotor field B_R',
+    statorField: 'Stator field B_S',
+    netField: 'Net field B_net',
+    vectorSum: 'B_net = B_R + B_S',
+    deltaArc: 'Angle δ',
+    gapFlux: 'Net air-gap flux',
+    deltaInside: 'δ inside the machine',
+    deltaPhasor: 'δ between E_A and V_φ',
+    mechanicalShort: 'mech.',
+    electricalShort: 'elec.',
+    syncNote: 'Rotor and fields turn together at {nSync}: the angles between them stay fixed.',
+    sumNoteTwoPoles: 'With 2 poles the arrows add as vectors: B_net = B_R + B_S.',
+    sumNoteManyPoles:
+      'With {poles} poles each arrow points at one N pole of its field; the vector sum B_net = B_R + B_S holds in electrical degrees.',
+    rotorPolesNote: 'The rotor’s N pole sits on B_R; the field winding (I_F) makes it.',
+    rotation: 'The curved arrow outside the stator shows the direction of rotation (counterclockwise).',
+    fieldCurrentShort: 'field current I_F',
+  },
+
   fieldLab: {
     title: 'The rotating magnetic field',
     lead: 'Three fixed coils carry three currents 120° apart. Together they make one field that turns.',

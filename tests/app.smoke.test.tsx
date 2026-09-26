@@ -14,7 +14,8 @@ describe('app renders in both languages', () => {
       );
       const d = DICTIONARIES[lang];
       expect(html).toContain(d.meta.appTitle);
-      expect(html).toContain(d.fieldLab.title);
+      expect(html).toContain(d.machineLab.title);
+      expect(html).toContain(d.nav.field);
       expect(html).toContain(d.controls.poles);
       expect(html).not.toContain('undefined');
       expect(html).not.toContain('NaN');
@@ -26,7 +27,7 @@ describe('app renders in both languages', () => {
         <App />
       </I18nProvider>,
     );
-    for (const text of [DICTIONARIES.en.fieldLab.title, DICTIONARIES.en.fieldLab.captionPulsating, DICTIONARIES.en.controls.play])
+    for (const text of [DICTIONARIES.en.machineLab.viewTitle, DICTIONARIES.en.nav.field, DICTIONARIES.en.machineLab.operatingPoint, DICTIONARIES.en.controls.play])
       expect(html).not.toContain(text);
   });
 });

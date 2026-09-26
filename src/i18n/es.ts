@@ -260,6 +260,36 @@ export const es: Dictionary = {
     pullOut: { hook: '¿Qué pasa si le pides demasiado?' },
   },
 
+  nav: {
+    label: 'Secciones',
+    machine: 'La máquina',
+    field: 'Campo giratorio',
+  },
+
+  machineLab: {
+    title: 'La máquina',
+    lead: 'Estator, rotor y tres campos (B_R, B_S y B_net) que giran juntos a velocidad síncrona.',
+    viewTitle: 'Corte transversal',
+    operatingPoint: 'Punto de operación',
+    rotorField: 'Campo del rotor B_R',
+    statorField: 'Campo del estator B_S',
+    netField: 'Campo neto B_net',
+    vectorSum: 'B_net = B_R + B_S',
+    deltaArc: 'Ángulo δ',
+    gapFlux: 'Flujo neto en el entrehierro',
+    deltaInside: 'δ dentro de la máquina',
+    deltaPhasor: 'δ entre E_A y V_φ',
+    mechanicalShort: 'mec.',
+    electricalShort: 'eléc.',
+    syncNote: 'El rotor y los campos giran juntos a {nSync}: los ángulos entre ellos no cambian.',
+    sumNoteTwoPoles: 'Con 2 polos las flechas se suman como vectores: B_net = B_R + B_S.',
+    sumNoteManyPoles:
+      'Con {poles} polos cada flecha apunta a un polo N de su campo; la suma vectorial B_net = B_R + B_S se cumple en grados eléctricos.',
+    rotorPolesNote: 'El polo N del rotor está sobre B_R; lo produce el devanado de campo (I_F).',
+    rotation: 'La flecha curva fuera del estator indica el sentido de giro (antihorario).',
+    fieldCurrentShort: 'corriente de campo I_F',
+  },
+
   fieldLab: {
     title: 'El campo magnético giratorio',
     lead: 'Tres bobinas fijas llevan tres corrientes desfasadas 120°. Juntas forman un solo campo que gira.',

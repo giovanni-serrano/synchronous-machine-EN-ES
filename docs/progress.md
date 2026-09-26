@@ -9,8 +9,8 @@ Architecture: [architecture.md](architecture.md).
 | Phase | Content | Status |
 |---|---|---|
 | 1 | Physics model, architecture, documentation, i18n infrastructure | Done — CP1 approved |
-| 2 | Rotating magnetic field | **Done** |
-| 3 | Machine view (2.5D cross-section) | Not started |
+| 2 | Rotating magnetic field | Done (+ coil-axes enhancement) |
+| 3 | Machine view (2.5D cross-section) | **Done** |
 | 4 | Motor / generator | Not started |
 | 5 | P, Q, S and PF | Not started |
 | 6 | Phasors | Not started |
@@ -54,6 +54,26 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
   (iframe probe: no horizontal overflow). Note: headless Edge does not shrink its window below ~496 px, so phone widths
   must be tested through an iframe.
 - Tests: 110 passing.
+- Enhancement (requested after Phase 2): coil magnetic axes +a/+b/+c drawn in the cross-section with the same colours and
+  labels as the vector diagram; hovering or focusing a coil highlights its axis in both panels; note "the field of a coil
+  is perpendicular to the plane of its conductors". Physics: `coilAxes` (tested against the conductor positions).
+
+## Phase 3 — delivered
+
+- Section tabs: **The machine** (default) and **Rotating field**.
+- `src/ui/machine/MachineView.tsx`: full cross-section — stator (shared `StatorDrawing`, now with the real instantaneous
+  phase currents of the operating point), net air-gap flux, rotor with salient poles drawn (note: cylindrical-rotor
+  model), field winding with its current direction, shaft with keyway, B_R / B_S / B_net arrows (tip-to-tail sum for
+  2 poles), δ arc between B_net and B_R in mechanical degrees, direction of rotation.
+- `src/ui/machine/MachineLab.tsx`: operating point from scenarios A–G, poles 2/4/6/8, readouts (δ mechanical and
+  electrical with "E_A leads/lags V_φ", mode, n_sync, I_F, E_A, I_A, P/P_max), toggles doubling as legend, notes
+  (δ between B_R and B_net, δ/(poles/2) with live values, vector sum, salient drawing, rotation, slow motion).
+- `src/animation/snapshot.ts`: time-dependent picture of the steady state (tested, see physics-model.md §13.1).
+- Shared `TransportControls` / `useTransportKeys`.
+- Checked in Edge: scenario A (motor, 4 poles) and B (generator, 2 poles) in EN/ES; label collisions fixed.
+- Tests: 124 passing.
+- Next (Phase 4): MOTOR / GENERATOR selector, load and excitation sliders, energy-flow arrows, continuous motor ↔ generator
+  sweep with a locked drawing convention.
 
 ## Decisions log
 
@@ -76,6 +96,8 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D16 | Stator pole faces: N where flux leaves the stator, S where it enters; the resultant points at an S face. | physics-model.md §12 |
 | D17 | Slow motion ×1 = 120× slower than real time (one 60 Hz cycle per 2 s); the clock keeps physical time. | physics-model.md §16 |
 | D18 | Field lab opens with 2 poles (single resultant across the bore); the machine views will default to the reference 4 poles. | RotatingFieldLab.tsx |
+| D19 | "The machine" is the default tab (the machine is the visual protagonist, brief §7); the field lab stays one click away. | App.tsx |
+| D20 | Until Phase 4 the machine view is driven by scenarios A–G; it defaults to scenario A at the reference 4 poles. | MachineLab.tsx |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)
