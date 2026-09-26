@@ -241,6 +241,25 @@ i_c = I cos(ωt − 240°). Each phase gives a **pulsating** vector along its ow
 1.5 B_M** and rotates **counterclockwise** at ω (tested). With a given number of poles the N–S pattern repeats poles/2 times, so the
 field turns at ω / (poles/2) mechanically — n_sync.
 
+**Air-gap distribution.** The radial flux density of the stator field (fundamental), positive outward from the bore into
+the stator, is B_r(θ_mech, t) = 1.5 B_M cos((poles/2)·θ_mech − ωt) (`airGapFluxDensity`). The cross-section draws it as
+radial arrows whose length and opacity follow B_r — a colour-independent picture of the real field.
+
+**Stator pole faces.** N where flux **leaves** the stator surface (B_r < 0), S where it **enters** (B_r > 0); there are
+exactly `poles` faces, alternating (`statorPoleFaces`, tested). Consequence worth stating on screen: the resultant space
+vector points at a stator **S** face — which is where a rotor **N** pole will align in the next phases.
+
+**Winding drawing.** One concentrated coil per phase per pole pair (`windingConductors`). For a phase with magnetic axis α
+(electrical), the "go" side (dot = current out of the page for positive current) is at α + 90° and the "return" side
+(a′, cross) at α − 90°; mechanical positions are those divided by poles/2 and repeated. A Biot–Savart test sums the field of
+the drawn line currents at the centre (2 poles) and checks it points along the resultant ωt, so dots, crosses and arrows
+are consistent with the right-hand rule. Real machines use distributed windings; the concentrated drawing is a visual
+simplification and the model uses only the fundamental.
+
+**One resultant vector only for 2 poles.** With more poles the field across the bore is not a single uniform vector, so
+the cross-section shows the arrow B_S only for 2 poles; the electrical space-vector diagram (always in electrical degrees)
+shows it for any number of poles.
+
 ---
 
 ## 13. Field space vectors and phasors (brief §4, §5.5)
@@ -305,7 +324,9 @@ all inputs of §3 and all outputs of §3, field space vectors (flux pu), instant
 
 | Variable | Why it exists |
 |---|---|
-| Animation time scale (slow motion) | 1800 rpm = 30 rev/s is invisible. The UI states "Slow motion — the real machine turns at N rpm"; the displayed n_sync is always the physical value, and relative speeds (2 vs 4 poles) are preserved. |
+| Animation time scale (slow motion) | 1800 rpm = 30 rev/s is invisible. The clock (`src/animation/clock.ts`) holds *physical* time and maps wall time to it with a slow-motion scale (×1 = 120× slower: one 60 Hz cycle every 2 s; speed ×0.25–×2). ωt = 2πft stays physical, so 50 vs 60 Hz and 2 vs 4 poles keep their true ratios. The UI states "Slow motion — the real machine turns at N rpm (k× slower than real time)"; the displayed n_sync is always the physical value. |
+| Normalised currents and fields (i / I_max, B / B_M) | The field lab shows shapes and ratios, not amperes or teslas. |
+| Concentrated one-coil-per-phase winding drawing | Recognisability (§12). |
 | Phasor-diagram scales (V/px, A/px) | Voltages and currents have different units; I_A has its own scale and its length is not comparable to the voltages. |
 | Field-vector length scale | Flux pu → px. |
 | Vector exaggeration / glow (social clips) | Readability on phones. Declared per clip in storyboard.md. |

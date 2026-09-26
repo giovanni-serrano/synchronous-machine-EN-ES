@@ -8,8 +8,8 @@ Architecture: [architecture.md](architecture.md).
 
 | Phase | Content | Status |
 |---|---|---|
-| 1 | Physics model, architecture, documentation, i18n infrastructure | **Done — awaiting checkpoint 1 approval** |
-| 2 | Rotating magnetic field | Not started |
+| 1 | Physics model, architecture, documentation, i18n infrastructure | Done — CP1 approved |
+| 2 | Rotating magnetic field | **Done** |
 | 3 | Machine view (2.5D cross-section) | Not started |
 | 4 | Motor / generator | Not started |
 | 5 | P, Q, S and PF | Not started |
@@ -36,6 +36,25 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 - Docs: physics model, sign conventions, architecture, learning objectives, storyboard (draft), glossary, this file,
   README (EN) and README.es.md.
 
+## Phase 2 — delivered
+
+- Rotating-field lab (`src/ui/fieldLab/`), the page's current content (lesson scenes 2–3, demos A–B):
+  - cross-section with the coil sides of a, b, c (dot/cross by the sign of the current, fill by its size), radial
+    air-gap flux arrows, stator pole faces N/S, and the resultant B_S (2 poles);
+  - electrical space-vector diagram: each phase's pulsating contribution on its axis, resultant on its 1.5 B_M locus,
+    optional tip-to-tail sum;
+  - i_a, i_b, i_c over one cycle with a moving cursor, hover values, and drag-to-scrub;
+  - controls: play/pause, ±5° frame step (also Space / ← →), speed ×0.25–×2, 50/60 Hz, 2/4/6/8 poles, per-phase and
+    resultant toggles; readouts n_sync, ωt, mechanical field position, slow-motion note.
+- Physics: `airGapFluxDensity`, `statorPoleFaces`, `windingConductors` (Biot–Savart consistency test).
+- Animation clock module (physical time + slow-motion scale), tested.
+- Palette in `src/ui/theme.ts`, validated with the dataviz validator.
+- Placeholder scenario table removed (D12); `phase1` dictionary keys removed.
+- Checked in a real browser (Edge headless screenshots): desktop 1440 px EN/ES, 2 and 4 poles, and a true 390 px layout
+  (iframe probe: no horizontal overflow). Note: headless Edge does not shrink its window below ~496 px, so phone widths
+  must be tested through an iframe.
+- Tests: 110 passing.
+
 ## Decisions log
 
 | # | Decision | Where |
@@ -53,6 +72,10 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D11 | Transients (synchronisation, pull-out) via a per-unit swing equation with illustrative H, D — qualitative. | physics-model.md §14 |
 | D12 | Placeholder page is temporary; replaced by the Explore view from Phase 2 on. | App.tsx |
 | D13 | P means active power only. The number of poles is always written out ("Poles / Polos" in the UI, `poles` in code, "poles" in formulas: n_sync = 120 f / poles). | glossary.md |
+| D15 | Dark theme only; per-quantity palette validated per panel; labels always carry identity. | src/ui/theme.ts |
+| D16 | Stator pole faces: N where flux leaves the stator, S where it enters; the resultant points at an S face. | physics-model.md §12 |
+| D17 | Slow motion ×1 = 120× slower than real time (one 60 Hz cycle per 2 s); the clock keeps physical time. | physics-model.md §16 |
+| D18 | Field lab opens with 2 poles (single resultant across the bore); the machine views will default to the reference 4 poles. | RotatingFieldLab.tsx |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

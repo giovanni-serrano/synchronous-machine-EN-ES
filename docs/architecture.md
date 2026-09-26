@@ -48,7 +48,10 @@ src/
     spaceVectors.ts   B_R, B_S, B_net from the operating point
     perUnit.ts        Per-unit bases
     scenarios.ts      Predefined scenarios A–G
-  animation/          (Phase 2) clock, slow-motion factor, rotor angle, qualitative swing equation
+  animation/
+    clock.ts          Physical time t, slow-motion scale, frame step, ωt (pure)
+    useAnimationClock.ts  requestAnimationFrame hook around the clock
+                      (later: rotor angle, qualitative swing equation)
   i18n/
     en.ts             Source-of-truth dictionary (type Dictionary = typeof en)
     es.ts             Must match en exactly (TypeScript + tests)
@@ -57,7 +60,13 @@ src/
     I18nProvider.tsx  React context: { lang, d, fmt, setLang }
   format/format.ts    Intl-based number/unit formatting, SI prefixes, per unit
   app/urlParams.ts    URL options parsing
-  ui/                 Components (SymbolText now; machine view, phasors, charts in later phases)
+  ui/
+    theme.ts          Fixed colour per quantity (validated per panel; see file header)
+    SymbolText.tsx    Dictionary text with subscripts (HTML and SVG versions)
+    svg/Arrow.tsx     Arrow primitive, polar → SVG coordinates
+    controls/         Segmented (radio group), ToggleChip (checkbox)
+    icons.tsx         Transport icons
+    fieldLab/         Phase 2: RotatingFieldLab, AirGapView, SpaceVectorDiagram, PhaseCurrentsPlot
   App.tsx, main.tsx
 tests/                Vitest: physics, i18n, infrastructure, render smoke test
 docs/                 Documentation (English)
@@ -87,7 +96,10 @@ docs/                 Documentation (English)
   input timelines, dictionary keys for text beats). Scenes drive `MachineInputs`; they never bypass the model.
 - **Presentation / clips**: same scene engine with a fixed-size stage (1920×1080, 1080×1080, 1080×1920), per-aspect
   layouts, auto-advance, camera (zoom/pan) and subtitle band.
-- Per-quantity colour tokens in `src/ui/theme.ts` (phases a/b/c, V_φ, I_A, E_A, P, Q, S), always paired with labels.
+- Per-quantity colours in `src/ui/theme.ts`: phases a/b/c magenta/yellow/blue; V_φ and B_net neutral light; E_A and B_R
+  orange; I_A and B_S aqua; jX_S I_A grey dashed; P violet, Q red, S neutral. Dark theme only. Validated with the dataviz
+  palette validator per panel (no four hues pass all pairs at once), so every vector, curve and conductor also carries a
+  text label.
 
 ## Testing
 
