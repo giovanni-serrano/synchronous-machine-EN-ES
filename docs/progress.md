@@ -241,7 +241,7 @@ Kept: typography, contrast, column, tone. Fixed:
   B_R behind B_net for a motor and ahead for a generator.
 - `magnetField` generalised to any number of poles; `salientRotor` and `poleLetters` shared in draw.ts.
 - Recordings (`scripts/record.mjs` modes poles, rotor, load, motor-gen, hook) — phone-sized WebM.
-- Checks: 185 tests; layout stability OK; perf LCP 1.27 s, JS 99 KB gzip.
+- Checks: 183 tests; layout stability OK; perf LCP 1.27 s, JS 99 KB gzip.
 
 ## Decisions log
 
