@@ -582,3 +582,99 @@ button {
   stroke-width: 3.5px;
   stroke-linejoin: round;
 }
+
+/* ---------- Phase 4: controls ---------- */
+
+.slider {
+  display: grid;
+  gap: 4px;
+}
+
+.slider__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  font-size: 0.85rem;
+}
+
+.slider__head label {
+  color: var(--text-dim);
+}
+
+.slider__head output {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.slider__track {
+  position: relative;
+}
+
+.slider__track--center::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: var(--text-dim);
+  pointer-events: none;
+}
+
+.slider input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.mode-select .segmented__option span {
+  min-width: 120px;
+  padding: 8px 14px;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.status-list .banner {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.banner--warning {
+  border-left-color: #fab219;
+}
+
+.energy {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 6px;
+}
+
+.flow-dash {
+  animation: flow-dash 1.2s linear infinite;
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-dash {
+    animation: none;
+  }
+}
+
+.convention-note {
+  color: var(--text);
+}

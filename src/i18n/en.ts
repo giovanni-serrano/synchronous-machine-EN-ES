@@ -132,11 +132,14 @@ export const en = {
   },
 
   energyFlow: {
+    title: 'Energy flow',
     grid: 'Grid',
     machine: 'Machine',
     shaft: 'Shaft',
     motorChain: 'Electrical energy → magnetic field → torque → mechanical energy',
     generatorChain: 'Mechanical energy → rotor motion → induction → electrical energy',
+    noLoadChain: 'No net active power: the machine floats on the grid.',
+    qNote: 'The dashed Q arrow gives the direction of reactive power flow; no net energy travels with it.',
   },
 
   torque: {
@@ -159,6 +162,7 @@ export const en = {
     limitNote: 'Static stability limit: δ = 90°.',
     lostExplanation: 'The demand exceeds P_max: there is no steady state, and the rotor slips poles.',
     excitationNote: 'Less excitation lowers P_max: under-exciting can also cause loss of synchronism.',
+    recoverHint: 'Lower the load or raise the excitation to bring the machine back into synchronism.',
   },
 
   warnings: {
@@ -236,6 +240,19 @@ export const en = {
     excitationSweep: { hook: 'One knob decides if the machine gives or takes reactive power' },
     motorToGenerator: { hook: 'Same machine, energy flowing backwards' },
     pullOut: { hook: 'What happens when you ask for too much?' },
+  },
+
+  machineControls: {
+    title: 'Machine controls',
+    shaftPower: 'Shaft power',
+    signedHint: '← motor · 0 · generator →',
+    continuous: 'Continuous motor ↔ generator',
+    continuousHint:
+      'One signed slider: left of zero the machine motors, right of zero it generates. The drawing convention stays fixed, so I_A never jumps.',
+    autoSweep: 'Auto sweep',
+    presets: 'Presets',
+    drawingConvention: 'Drawing convention',
+    eAValue: 'E_A = {value}',
   },
 
   nav: {

@@ -124,3 +124,20 @@ export function presentOperatingPoint(
     torqueAction,
   };
 }
+
+export type ShaftFlow = 'intoMachine' | 'outOfMachine' | 'none';
+
+/** Energy-flow picture Grid ↔ Machine ↔ Shaft (brief §5.4). Convention-free, like {@link gridView}. */
+export interface EnergyFlow {
+  readonly grid: GridView;
+  /** Mechanical power at the shaft: into the machine (generator, prime mover) or out of it (motor, load). */
+  readonly shaft: { readonly direction: ShaftFlow; readonly magnitude: number };
+}
+
+/** Lossless model (R_A = 0, no mechanical losses): |P_mech| = |P_elec|. */
+export function energyFlow(op: OperatingPoint): EnergyFlow {
+  const grid = gridView(op);
+  const direction: ShaftFlow =
+    grid.p.direction === 'delivers' ? 'intoMachine' : grid.p.direction === 'absorbs' ? 'outOfMachine' : 'none';
+  return { grid, shaft: { direction, magnitude: Math.abs(op.p) } };
+}

@@ -11,7 +11,7 @@ Architecture: [architecture.md](architecture.md).
 | 1 | Physics model, architecture, documentation, i18n infrastructure | Done — CP1 approved |
 | 2 | Rotating magnetic field | Done (+ coil-axes enhancement) |
 | 3 | Machine view (2.5D cross-section) | **Done** |
-| 4 | Motor / generator | Not started |
+| 4 | Motor / generator | **Done** |
 | 5 | P, Q, S and PF | Not started |
 | 6 | Phasors | Not started |
 | 7 | Excitation, δ, stability, V curves (+ qualitative transients) | Not started |
@@ -88,8 +88,26 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
   - Verified in Edge: 2 and 4 poles, EN and ES, and 390 px (iframe probe, no horizontal overflow).
 - New test (for Phase 4): stator dots/crosses show the physical (internal) current and never depend on the convention
   used to present I_A (`tests/snapshot.test.ts`).
-- Next (Phase 4): MOTOR / GENERATOR selector, load and excitation sliders, energy-flow arrows, continuous motor ↔ generator
-  sweep with a locked drawing convention.
+
+## Phase 4 — delivered
+
+- Machine controls: prominent MOTOR / GENERATOR selector, shaft-load slider (label "Shaft load" / "Prime-mover power"
+  by mode, 0–150 kW), rotor excitation I_F (0–10 A, shows E_A), poles, presets A–G (highlighted when the controls match).
+- Continuous motor ↔ generator: one signed shaft-power slider (−150…+150 kW, tick at zero) with the drawing convention
+  locked (user-selectable, default generator) so I_A never jumps; "Auto sweep" drives it smoothly through zero (demo H).
+  The mode label changes when P crosses zero; δ and P change sign continuously.
+- Energy-flow panel Grid ↔ Machine ↔ Shaft: P (solid) and P_mech arrows, Q (dashed, moving dashes) with values; thickness
+  ∝ magnitude; directions from the convention-free `energyFlow()` (physics, tested); energy chain sentence per mode;
+  note that no net energy travels with Q; lossless note.
+- Status banners: near the stability limit (with "less excitation lowers P_max"), stator overcurrent, field
+  over-excitation, loss of synchronism (no steady state; hint to lower the load or raise I_F). The qualitative pull-out
+  animation remains Phase 7.
+- Operating-point readouts add τ_ind with "drives the rotor / opposes the rotation" and the active convention indicator.
+- Stator dots/crosses follow the physical current and never flip with the convention (test added before this phase).
+- Verified in Edge: motor (EN), generator (ES), loss of synchronism, continuous mode (ES), 390 px EN/ES without overflow.
+- Tests: 141 passing.
+- Polish backlog (Phase 10): energy-flow labels are small at phone width.
+- Next (Phase 5): P, Q, S and PF — power triangle linked to the machine, S = P + jQ, lagging/leading, PF scenarios.
 
 ## Decisions log
 

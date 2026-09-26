@@ -101,7 +101,13 @@ artefact of the convention, not physics. Two remedies, both available:
    sweeps (scene 5, demo H). The indicator shows the locked convention; PF labels still follow the mode.
 2. Run the sweep with E_A = V_φ: then I_A = 0 exactly at P = 0 and the switch is invisible.
 
-The internal phasors are continuous through P = 0 (tested).
+The internal phasors are continuous through P = 0 (tested), and so is the drawn I_A with a locked convention (tested,
+including a mutation check recorded in progress.md). In the machine lab, "Continuous motor ↔ generator" switches to a
+signed shaft-power slider and locks the drawing convention (selectable); the indicator always names the convention in use.
+
+**What never depends on the convention:** the stator dots/crosses (physical winding currents), the field vectors B_R,
+B_S, B_net, the energy-flow arrows and the "seen from the grid" summary. Only the drawn I_A / jX_S I_A phasors and the
+signed P, Q readouts of the presentation change with it.
 
 ---
 

@@ -128,11 +128,14 @@ export const es: Dictionary = {
   },
 
   energyFlow: {
+    title: 'Flujo de energía',
     grid: 'Red',
     machine: 'Máquina',
     shaft: 'Eje',
     motorChain: 'Energía eléctrica → campo magnético → par → energía mecánica',
     generatorChain: 'Energía mecánica → giro del rotor → inducción → energía eléctrica',
+    noLoadChain: 'Sin potencia activa neta: la máquina flota sobre la red.',
+    qNote: 'La flecha punteada de Q indica el sentido del flujo de potencia reactiva; con ella no viaja energía neta.',
   },
 
   torque: {
@@ -157,6 +160,7 @@ export const es: Dictionary = {
       'La demanda supera P_max: no existe régimen permanente y el rotor se desliza respecto al campo.',
     excitationNote:
       'Menos excitación reduce P_max: subexcitar también puede provocar la pérdida de sincronismo.',
+    recoverHint: 'Baja la carga o sube la excitación para que la máquina recupere el sincronismo.',
   },
 
   warnings: {
@@ -258,6 +262,19 @@ export const es: Dictionary = {
     excitationSweep: { hook: 'Una perilla decide si la máquina da o toma potencia reactiva' },
     motorToGenerator: { hook: 'La misma máquina, la energía al revés' },
     pullOut: { hook: '¿Qué pasa si le pides demasiado?' },
+  },
+
+  machineControls: {
+    title: 'Controles de la máquina',
+    shaftPower: 'Potencia en el eje',
+    signedHint: '← motor · 0 · generador →',
+    continuous: 'Motor ↔ generador continuo',
+    continuousHint:
+      'Un solo slider con signo: a la izquierda del cero la máquina es motor, a la derecha es generador. La convención de dibujo no cambia, así que I_A nunca salta.',
+    autoSweep: 'Barrido automático',
+    presets: 'Escenarios',
+    drawingConvention: 'Convención de dibujo',
+    eAValue: 'E_A = {value}',
   },
 
   nav: {
