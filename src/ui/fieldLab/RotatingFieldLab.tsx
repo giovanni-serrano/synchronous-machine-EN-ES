@@ -42,6 +42,8 @@ export function RotatingFieldLab() {
   const [resultant, setResultant] = useState(true);
   const [tipToTail, setTipToTail] = useState(false);
   const [flux, setFlux] = useState(true);
+  const [axes, setAxes] = useState(true);
+  const [highlight, setHighlight] = useState<PhaseId | null>(null);
   const clock = useAnimationClock(speed);
 
   const wt = electricalAngle(clock.t, f);
@@ -86,7 +88,14 @@ export function RotatingFieldLab() {
       <div className="lab__grid">
         <figure className="panel panel--machine">
           <figcaption className="panel__title">{d.fieldLab.airGapTitle}</figcaption>
-          <AirGapView wt={wt} poles={poles} show={{ phases, resultant, flux }} />
+          <AirGapView
+            wt={wt}
+            poles={poles}
+            show={{ phases, resultant, flux, axes }}
+            highlight={highlight}
+            onHighlight={setHighlight}
+          />
+          <p className="hint">{d.fieldLab.hoverHint}</p>
           <div className="legend">
             <span className="legend__item">
               <svg width="14" height="14" viewBox="-7 -7 14 14" aria-hidden="true">
@@ -104,6 +113,7 @@ export function RotatingFieldLab() {
             </span>
           </div>
           <ul className="notes">
+            <li>{d.fieldLab.captionCoilAxis}</li>
             <li>{d.fieldLab.captionPoleFaces}</li>
             <li>
               {poles === 2
@@ -119,7 +129,7 @@ export function RotatingFieldLab() {
             <figcaption className="panel__title">
               {d.fieldLab.vectorsTitle} <span className="panel__note">· {d.fieldLab.vectorsNote}</span>
             </figcaption>
-            <SpaceVectorDiagram wt={wt} phases={phases} resultant={resultant} tipToTail={tipToTail} />
+            <SpaceVectorDiagram wt={wt} phases={phases} resultant={resultant} tipToTail={tipToTail} highlight={highlight} />
             <ul className="notes">
               <li>{d.fieldLab.captionPulsating}</li>
               <li>
@@ -207,6 +217,9 @@ export function RotatingFieldLab() {
             </ToggleChip>
             <ToggleChip checked={tipToTail} onChange={setTipToTail}>
               {d.fieldLab.tipToTail}
+            </ToggleChip>
+            <ToggleChip checked={axes} onChange={setAxes}>
+              {d.fieldLab.coilAxes}
             </ToggleChip>
             <ToggleChip checked={flux} onChange={setFlux}>
               {d.fieldLab.airGapFlux}

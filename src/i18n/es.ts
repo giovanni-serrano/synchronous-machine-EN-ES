@@ -271,6 +271,9 @@ export const es: Dictionary = {
     airGapTitle: 'Corte transversal: estator y entrehierro',
     captionPulsating: 'Cada fase solo pulsa, adelante y atrás, sobre su propio eje.',
     captionResultant: 'Su suma mantiene una longitud constante, 1.5 B_M, y gira a ω.',
+    captionCoilAxis: 'El campo de una bobina es perpendicular al plano de sus conductores.',
+    hoverHint: 'Pasa el mouse sobre una bobina (o selecciónala con Tab) para resaltar su eje magnético en ambos paneles.',
+    coilAxes: 'Ejes de las bobinas',
     captionPoleFaces: 'N y S son caras polares del estator: el flujo sale del estator por N y entra por S.',
     captionTwoPoles: 'Con 2 polos, un ciclo eléctrico hace que el campo dé una vuelta completa a la máquina.',
     captionManyPoles:

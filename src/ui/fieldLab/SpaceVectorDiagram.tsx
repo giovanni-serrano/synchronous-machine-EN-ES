@@ -17,11 +17,14 @@ export function SpaceVectorDiagram({
   phases,
   resultant,
   tipToTail,
+  highlight,
 }: {
   wt: number;
   phases: Readonly<Record<PhaseId, boolean>>;
   resultant: boolean;
   tipToTail: boolean;
+  /** Phase whose axis is highlighted (hovered coil in the cross-section). */
+  highlight: PhaseId | null;
 }) {
   const { d } = useI18n();
   const field = statorField(wt);
@@ -53,10 +56,20 @@ export function SpaceVectorDiagram({
       {PHASES.map((ph) => {
         const [x, y] = polarXY(AXIS, PHASE_AXES[ph]);
         const [lx, ly] = polarXY(AXIS + 14, PHASE_AXES[ph]);
+        const on = highlight === ph;
         return (
-          <g key={ph}>
-            <line x1={-x} y1={-y} x2={x} y2={y} stroke={PHASE_COLORS[ph]} strokeOpacity={0.35} strokeDasharray="2 4" />
-            <text x={lx} y={ly} className="svg-label" textAnchor="middle" dominantBaseline="central">
+          <g key={ph} opacity={highlight !== null && !on ? 0.3 : 1}>
+            <line
+              x1={-x}
+              y1={-y}
+              x2={x}
+              y2={y}
+              stroke={PHASE_COLORS[ph]}
+              strokeOpacity={on ? 0.95 : 0.35}
+              strokeWidth={on ? 2.4 : 1}
+              strokeDasharray={on ? undefined : '2 4'}
+            />
+            <text x={lx} y={ly} className={on ? 'svg-label svg-label--strong' : 'svg-label'} textAnchor="middle" dominantBaseline="central">
               +{ph}
             </text>
           </g>

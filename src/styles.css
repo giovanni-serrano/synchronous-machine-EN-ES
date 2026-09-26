@@ -450,3 +450,9 @@ button {
   font-size: 0.78rem;
   color: var(--text-dim);
 }
+
+/* Interactive coils in the cross-section (highlight shows as a ring; no box outline on SVG groups) */
+.coil {
+  cursor: pointer;
+  outline: none;
+}

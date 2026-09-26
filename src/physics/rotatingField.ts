@@ -110,3 +110,25 @@ export function windingConductors(poles: number): Conductor[] {
     }
   return out;
 }
+
+export interface CoilAxis {
+  readonly phase: PhaseId;
+  /** Which coil of the phase (0 … poles/2 − 1). */
+  readonly coil: number;
+  /**
+   * Mechanical angle of the coil's magnetic axis (direction of its field for a positive current), rad in [0, 2π).
+   * It lies midway between the coil's go and return sides: the field of a coil is perpendicular to the plane
+   * of its conductors.
+   */
+  readonly angle: number;
+}
+
+/** Magnetic axes of every coil (one per phase per pole pair), consistent with {@link windingConductors}. */
+export function coilAxes(poles: number): CoilAxis[] {
+  const pairs = poles / 2;
+  const out: CoilAxis[] = [];
+  for (const phase of PHASES)
+    for (let coil = 0; coil < pairs; coil++)
+      out.push({ phase, coil, angle: wrap2Pi((PHASE_AXES[phase] + TWO_PI * coil) / pairs) });
+  return out;
+}

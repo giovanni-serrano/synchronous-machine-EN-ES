@@ -249,6 +249,9 @@ export const en = {
     airGapTitle: 'Cross-section: stator and air gap',
     captionPulsating: 'Each phase only pulses back and forth along its own axis.',
     captionResultant: 'Their sum keeps a constant length, 1.5 B_M, and turns at ω.',
+    captionCoilAxis: 'The field of a coil is perpendicular to the plane of its conductors.',
+    hoverHint: 'Hover over a coil (or focus it with Tab) to highlight its magnetic axis in both panels.',
+    coilAxes: 'Coil axes',
     captionPoleFaces: 'N and S are stator pole faces: flux leaves the stator at N and enters it at S.',
     captionTwoPoles: 'With 2 poles, one electrical cycle turns the field once around the machine.',
     captionManyPoles:

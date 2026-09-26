@@ -4,6 +4,7 @@ import {
   abs,
   airGapFluxDensity,
   arg,
+  coilAxes,
   statorField,
   statorPoleFaces,
   windingConductors,
@@ -93,5 +94,45 @@ describe('air-gap field and stator pole faces (brief §5.2)', () => {
     expectRel(arg(statorField(wt).net), wt, 0, 1e-12);
     const s4 = statorPoleFaces(wt, 4).filter((f) => f.kind === 'S').map((f) => f.angle);
     expect(s4.some((a) => Math.abs(a - wt / 2) < 1e-12)).toBe(true);
+  });
+});
+
+describe('coil magnetic axes (drawn in the cross-section)', () => {
+  it('each axis is midway between its coil sides, i.e. perpendicular to the plane of the conductors (2 poles)', () => {
+    const conductors = windingConductors(2);
+    for (const axis of coilAxes(2)) {
+      const go = conductors.find((c) => c.phase === axis.phase && c.side === 'go')!;
+      const ret = conductors.find((c) => c.phase === axis.phase && c.side === 'return')!;
+      // chord go→return is perpendicular to the axis direction
+      const chord = [Math.cos(ret.angle) - Math.cos(go.angle), Math.sin(ret.angle) - Math.sin(go.angle)];
+      expectRel(chord[0]! * Math.cos(axis.angle) + chord[1]! * Math.sin(axis.angle), 0, 0, 1e-12);
+      // and equidistant (in angle) from both sides
+      expectRel(Math.abs(wrapAngle(go.angle - axis.angle)), Math.PI / 2, 0, 1e-12);
+      expectRel(Math.abs(wrapAngle(ret.angle - axis.angle)), Math.PI / 2, 0, 1e-12);
+    }
+  });
+
+  it('with more poles, each coil axis sits at (α + 2πk)/(poles/2), a quarter pole-pitch from each side', () => {
+    for (const poles of [4, 6, 8]) {
+      const pairs = poles / 2;
+      const axes = coilAxes(poles);
+      expect(axes).toHaveLength(3 * pairs);
+      const conductors = windingConductors(poles);
+      for (const axis of axes) {
+        const sides = conductors.filter(
+          (c) => c.phase === axis.phase && Math.abs(Math.abs(wrapAngle(c.angle - axis.angle)) - Math.PI / (2 * pairs)) < 1e-9,
+        );
+        expect(sides.map((s) => s.side).sort()).toEqual(['go', 'return']);
+      }
+    }
+  });
+
+  it('a positive current in phase a alone puts the stator S face on its axis (field along the axis)', () => {
+    // wt = 0: i_a = 1 is the largest current, the resultant lies on +a
+    for (const poles of [2, 4]) {
+      const sFaces = statorPoleFaces(0, poles).filter((f) => f.kind === 'S').map((f) => f.angle);
+      for (const axis of coilAxes(poles).filter((x) => x.phase === 'a'))
+        expect(sFaces.some((a) => Math.abs(wrapAngle(a - axis.angle)) < 1e-12)).toBe(true);
+    }
   });
 });
