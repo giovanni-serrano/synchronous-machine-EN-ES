@@ -333,6 +333,8 @@ export const en = {
       figureLabel:
         'Cross-section of a stator with three coils. Their pulsing fields add up to one field of constant strength that turns.',
       sum: 'sum',
+      showSum: 'Add them tip to tail',
+      showParts: 'Back to their own axes',
       coilOff: 'Coil {phase} is off.',
       coilOn: 'Coil {phase} is on.',
     },
@@ -344,8 +346,13 @@ export const en = {
     },
     next: {
       title: 'Next: the rotor',
-      body: 'Drop a magnet into this spinning field and it chases it, then locks on. That is the next section. Until it is written, you can explore the complete machine.',
-      link: 'Explore the complete machine (preview)',
+      body: 'Drop a magnet into this spinning field and it chases it, then locks on. That is the next section — coming soon.',
+    },
+    clip: {
+      caption0: 'Three coils. Nothing moves.',
+      caption1: 'Three currents make a magnet that spins.',
+      caption2: 'Now drop in a rotor…',
+      caption3: '…and it locks on.',
     },
     footer: {
       license: 'Code MIT · text CC BY 4.0',

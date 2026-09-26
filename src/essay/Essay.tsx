@@ -36,7 +36,7 @@ const Formula = ({ children }: { children: string }) => (
   </p>
 );
 
-export function Essay({ labHref }: { labHref: string }) {
+export function Essay() {
   const { d, lang, setLang } = useI18n();
   const e = d.essay;
   useEffect(() => {
@@ -91,11 +91,6 @@ export function Essay({ labHref }: { labHref: string }) {
             {e.next.title}
           </h2>
           <P>{e.next.body}</P>
-          <p className="prose">
-            <a className="text-link" href={labHref}>
-              {e.next.link} →
-            </a>
-          </p>
         </section>
       </main>
 

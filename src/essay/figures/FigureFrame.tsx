@@ -25,8 +25,8 @@ export function FigureFrame({
 }: {
   boxRef: Ref<HTMLDivElement>;
   canvasRef: Ref<HTMLCanvasElement>;
-  /** width / height */
-  aspect: number;
+  /** width / height; omit when the figure class sets the aspect in CSS (e.g. fig--scene: 5:6 phone, 16:10 desktop) */
+  aspect?: number;
   label: string;
   instruction?: ReactNode;
   keysHint?: string;
@@ -44,7 +44,7 @@ export function FigureFrame({
   const interactive = !!onPointerDown;
   return (
     <figure className={`fig ${className}`}>
-      <div className="fig__box" ref={boxRef} style={{ aspectRatio: String(aspect) }}>
+      <div className="fig__box" ref={boxRef} style={aspect ? { aspectRatio: String(aspect) } : undefined}>
         <canvas
           ref={canvasRef}
           className={interactive ? 'fig__canvas fig__canvas--interactive' : 'fig__canvas'}

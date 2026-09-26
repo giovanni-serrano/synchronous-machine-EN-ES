@@ -36,7 +36,14 @@ New form: an **explorable explanation** in the manner of Bartosz Ciechanowski's 
   only where a figure needs a frame of reference.
 - **Text** near-white `#f4f1ea` (17.0:1), secondary `#b9b4a8` (9.3:1), tertiary `#8e897f` (5.5:1, captions only).
 - **Figures** are canvas-drawn: thick strokes (3–5 px at 390 px), large labels (≥ 15 px), a soft glow on active fields
-  (additive radial sprites, not blur filters, so it stays at 60 fps on phones).
+  (additive layers, not blur filters, so it stays at 60 fps on phones). Phones: portrait figures (5 : 6) full width;
+  desktop (≥ 960 px): wide figures (16 : 10) up to 900 px — machine large on the left, waves on the right — while the
+  text column stays at ~65 characters.
+- **The field is drawn as a magnet** (review 2b): two lobes hugging the bore, S where flux enters the stator and N where
+  it leaves, labelled at their peaks, with flux lines crossing the bore from N to S. From the model's B_r(θ)
+  (`statorGapField` = `airGapFluxDensity` with three coils, tested): lobe **thickness ∝ |B_r|** (the flux density, read
+  as geometry) and **brightness ∝ B_r²** (the magnetic energy density). With brightness ∝ |B_r| the cosine distribution
+  still read as a ring (at 45° from the pole B is 71 % of the peak); the energy mapping makes the neutral zones dark.
 - **Motion**: slow by default — one rotor turn ≥ 8 s in narrative sections; eased transitions (cubic in-out, 400–700 ms)
   when a figure changes state; nothing snaps. Every figure pauses when it leaves the viewport or the tab is hidden, and
   honours `prefers-reduced-motion` (static frame + manual scrub).
@@ -87,8 +94,12 @@ Rules for every figure:
 
 ## 5. The hook (first screen)
 
-A large, slowly turning machine fills the screen — no controls, just a glow travelling around the stator and the rotor
-following it — with one sentence and a hint to scroll. Three candidate lines:
+A large machine fills the screen, no controls, playing a loop that shows the headline literally (review 2b):
+**empty stator → the three currents fade in and a magnet (N and S lobes) turns inside the empty machine → a rotor
+appears and locks onto it → they turn together → fade and restart** (22 s; `hookSequence.ts`, tested for continuity).
+The same loop is the main clip for X: `?view=hook-clip` (square stage with captions synced to the stages) and
+`scripts/record.mjs` (1080 × 1080). The stator field always comes from the model; the rotor's pull-in is a qualitative
+damped approach. Three candidate lines:
 
 1. **"Every generator on the grid turns in perfect step. How can the same machine be a motor or a generator without
    changing a single wire?"** (the author's example, tightened)
@@ -104,7 +115,7 @@ The slice uses (2) as the headline and (1) as the standfirst, because (2) is ans
 |---|---|---|---|
 | 1 | Hook | Three fixed coils make a spinning magnet; the same machine can motor or generate | Big machine, slow, no UI |
 | 2 | One coil | A current makes a field along the coil's axis; alternating current makes it **pulse**, not turn | Coil cross-section, field arrow + air-gap glow; drag the current dot along its wave (or let it play) |
-| 3 | Three coils | Three pulses 120° apart **add into one field that turns** at constant strength | Tap coils on/off; scrub time; ghost contributions add tip-to-tail into the glowing resultant, whose tip draws a circle ★ |
+| 3 | Three coils | Three pulses 120° apart **add into one field that turns** at constant strength | First each component pulses on its own axis; after 5 s they slide (eased) tip to tail and the sum appears — translucent with an outline, under the components — with the exact locus of its tip; a button toggles the two views; tap coils on/off; scrub time ★ |
 | 4 | More poles, slower | n_sync = 120 f / poles: same frequency, more poles, slower turn | Pole count stepper; stopwatch readout in rpm |
 | 5 | The rotor | A magnet chases the field and locks on at exactly synchronous speed | Drag the rotor off, release: it snaps back and rides along |
 | 6 | Load | A load makes the rotor fall back by δ; the "magnetic spring" stretches ★ | Drag δ on the figure; field lines stretch; torque meter |

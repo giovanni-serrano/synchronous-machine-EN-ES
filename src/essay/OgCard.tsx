@@ -4,14 +4,14 @@
  */
 
 import { useI18n } from '../i18n/I18nProvider';
-import { HookFigure } from './figures/HookFigure';
+import { FIELD_FRAME_TIME, HookFigure } from './figures/HookFigure';
 
 export function OgCard() {
   const { d } = useI18n();
   return (
     <div className="essay og-card">
       <div className="og-card__figure">
-        <HookFigure still={1.9} />
+        <HookFigure still={FIELD_FRAME_TIME} />
       </div>
       <div className="og-card__text">
         <p className="hook__byline">{d.essay.byline}</p>

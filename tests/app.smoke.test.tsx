@@ -14,7 +14,9 @@ describe('essay (default view) renders in both languages', () => {
         </I18nProvider>,
       );
       const e = DICTIONARIES[lang].essay;
-      for (const text of [e.hook.title, e.oneCoil.title, e.threeCoils.title, e.next.link]) expect(html).toContain(text);
+      for (const text of [e.hook.title, e.oneCoil.title, e.threeCoils.title, e.next.body]) expect(html).toContain(text);
+      // the essay no longer links to the old lab design
+      expect(html).not.toContain('view=lab');
       expect(html).not.toContain('undefined');
       expect(html).not.toContain('NaN');
       // three canvases (hook, one coil, three coils), no bordered-card dashboard classes

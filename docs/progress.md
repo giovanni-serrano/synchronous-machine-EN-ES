@@ -14,7 +14,8 @@ Architecture: [architecture.md](architecture.md).
 | 4 | Motor / generator | **Done** |
 | 5 | P, Q, S and PF | **Done** |
 | 6 | Phasors | **Done** — CP2: physics approved, experience rejected |
-| 2b | **Explorable essay** (replaces 7–8): vertical slice hook + §2 + §3, scroll fix, layout test, publishing prepared | **Done — CP2b reached** (awaiting review) |
+| 2b | **Explorable essay** (replaces 7–8): vertical slice hook + §2 + §3, scroll fix, layout test, publishing prepared | Done — CP2b reviewed |
+| 2c | Review fixes: field as a magnet, readable components, hook loop, big desktop figures, own ending | **Done — awaiting review** |
 | 7 | Excitation, δ, stability, V curves → essay §11–12 and the lab | Not started |
 | 8 | Guided lesson → replaced by the essay (docs/experience-redesign.md) | Replaced |
 | 9 | Presentation mode and social clips (built on the essay sections) | Not started |
@@ -205,6 +206,22 @@ direction: a Ciechanowski-style explorable essay, mobile first, for sharing on X
   `check-layout-stability.mjs` — all with `playwright-core` and the installed Edge.
 - Tests: 170 (physics unchanged; smoke tests now cover the essay and the lab).
 
+## Checkpoint 2b — review and fixes (2c)
+
+Kept: typography, contrast, column, tone. Fixed:
+1. **Field as a magnet** — N and S lobes from the model's B_r(θ) (`fieldModel.ts`, tested equal to
+   `airGapFluxDensity`), thickness ∝ |B_r|, brightness ∝ B_r² (see experience-redesign.md §3), flux lines N → S, letters at
+   the peaks. Hook and §3 turn; §2 pulses on the coil axis.
+2. **§3 components readable** — thicker, each pulsing on its own (dotted) axis first; after 5 s they slide tip to tail
+   (eased) and the sum appears translucent with an outline, drawn under them; a button switches views. Vector scale
+   reduced (sum = 0.66 r_bore) so arrows never touch the N/S letters.
+3. **Hook no longer contradicts itself** — loop: empty stator → magnet turning alone → rotor appears and locks on
+   (`hookSequence.ts`, continuity test). `?view=hook-clip` + `record.mjs` produce the 1080 × 1080 clip for X.
+4. **Desktop** — figures 16 : 10 up to 900 px (machine left, waves right); hook figure up to 88 % of the viewport height.
+5. **Ending** — "Next: the rotor — coming soon", no link to the old lab (still reachable with `?view=lab` for development).
+- OG image now shows the magnet alone in the empty machine (the headline's claim).
+- Checks: 175 tests; layout stability OK (phone + desktop, EN/ES, lab); perf LCP 1.18 s, 114 KB (slow 4G, CPU ×4).
+
 ## Decisions log
 
 | # | Decision | Where |
@@ -236,6 +253,8 @@ direction: a Ciechanowski-style explorable essay, mobile first, for sharing on X
 | D26 | Essay figures are canvas, not SVG: no DOM change per frame (layout can't move), cheap glow, 60 fps on phones. | src/essay/canvas |
 | D27 | Palette per concept (experience-redesign.md §3); hues deliberately brighter than the validator's dark fill band — they are strokes and glows on near-black, labels stay neutral. | src/essay/theme.ts |
 | D28 | Hook headline "Three coils that never move make a magnet that spins." (alternatives in experience-redesign.md §5). | en.ts |
+| D29 | Field lobes: thickness ∝ |B_r|, brightness ∝ B_r² (energy density) so N and S read as separate poles. | draw.ts magnetField |
+| D30 | Hook loop timeline is a pure function of loop time (hookSequence.ts): essay, clip view, recordings and stills agree. | hookSequence.ts |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

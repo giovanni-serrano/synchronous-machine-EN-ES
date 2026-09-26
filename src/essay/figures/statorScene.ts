@@ -19,8 +19,25 @@ export interface SceneLayout {
   readonly strip: { readonly x0: number; readonly x1: number; readonly y0: number; readonly y1: number } | null;
 }
 
-/** Figure with a wave strip under the machine: box aspect 5 : 6. */
-export function layoutWithStrip(w: number): SceneLayout {
+/**
+ * Machine + wave strip. Portrait boxes (phones, aspect 5 : 6) put the strip under the machine; wide boxes (desktop,
+ * 16 : 10) put the machine large on the left and the strip on the right.
+ */
+export function layoutWithStrip(w: number, h: number = (w * 6) / 5): SceneLayout {
+  if (w / h >= 1.3) {
+    const ro = 0.43 * h;
+    const rb = 0.713 * ro;
+    const cx = 0.05 * w + ro;
+    const cy = h / 2;
+    const x0 = cx + ro + 0.085 * w;
+    return {
+      g: { cx, cy, ro, rb },
+      rc: 0.085 * ro,
+      rCond: rb + (ro - rb) * 0.36,
+      unit: 0.44 * rb,
+      strip: { x0, x1: w - 0.035 * w, y0: cy - 0.12 * h, y1: cy + 0.12 * h },
+    };
+  }
   const ro = 0.4 * w;
   const cy = 0.055 * w + ro;
   const rb = 0.285 * w;
@@ -29,7 +46,7 @@ export function layoutWithStrip(w: number): SceneLayout {
     g: { cx: w / 2, cy, ro, rb },
     rc: 0.034 * w,
     rCond: rb + (ro - rb) * 0.36,
-    unit: 0.5 * rb,
+    unit: 0.44 * rb,
     strip: { x0: 0.1 * w, x1: 0.92 * w, y0, y1: y0 + 0.19 * w },
   };
 }
@@ -52,7 +69,12 @@ export function winding(
   phases: readonly PhaseId[],
   wt: number,
   enabled: Readonly<Record<PhaseId, boolean>>,
-  { planes = true, letters = true, letterSize = 15 }: { planes?: boolean; letters?: boolean; letterSize?: number } = {},
+  {
+    planes = true,
+    letters = true,
+    letterSize = 15,
+    envelope = 1,
+  }: { planes?: boolean; letters?: boolean; letterSize?: number; envelope?: number } = {},
 ) {
   const { g } = L;
   for (const phase of phases) {
@@ -66,7 +88,7 @@ export function winding(
       const [x2, y2] = pt(g.cx, g.cy, L.rCond, ret.angle);
       coilPlane(ctx, x1, y1, x2, y2, color, on ? 0.35 : 0.15);
     }
-    const i = on ? phaseCurrent(phase, wt) : 0;
+    const i = on ? envelope * phaseCurrent(phase, wt) : 0;
     for (const c of cs) {
       const [x, y] = pt(g.cx, g.cy, L.rCond, c.angle);
       conductor(ctx, x, y, L.rc, color, c.side === 'go' ? i : -i, on);

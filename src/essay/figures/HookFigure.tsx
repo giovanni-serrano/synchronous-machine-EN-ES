@@ -1,21 +1,24 @@
 /**
- * The hook: a large synchronous machine turning slowly, no controls. Three-phase currents glow in the stator slots,
- * the field they make travels around the air gap (the same renderer as §3), and a two-pole rotor follows it a little
- * behind — a motor at light load. One electrical cycle every 12 s.
+ * The hook (checkpoint 2b review): a loop that shows the headline literally — an empty stator, three currents that
+ * make a magnet (N and S lobes from the model's B_r(θ)) turning inside the empty machine, and only then a rotor that
+ * appears and locks onto it. Timeline: hookSequence.ts. No controls; it pauses off-screen.
  */
 
-import { PHASES, statorField } from '../../physics';
+import { PHASES } from '../../physics';
 import { useI18n } from '../../i18n/I18nProvider';
-import { arrow, gapField, pt, statorIron } from '../canvas/draw';
+import { arrow, magnetField, pt, statorIron } from '../canvas/draw';
 import { prefersReducedMotion, useCanvasFigure } from '../canvas/useCanvasFigure';
 import { CONCEPT, INK, alpha } from '../theme';
+import { statorGapField } from './fieldModel';
 import { FigureFrame } from './FigureFrame';
+import { HOOK_CYCLE_S, HOOK_STAGES, hookFrame, type HookFrame } from './hookSequence';
 import { layoutSquare, winding } from './statorScene';
 import { useRef } from 'react';
 
-export const HOOK_CYCLE_S = 12;
-/** Rotor lag behind the stator field (visual; a lightly loaded motor). */
-const HOOK_LAG = 0.35;
+/** A loop time in the middle of the "locked" stage (reduced motion). */
+export const LOCKED_FRAME_TIME = HOOK_STAGES.slice(0, 5).reduce((s, [, d]) => s + d, 0) + 3;
+/** A loop time in the "field" stage: the magnet alone in the empty machine (Open Graph card). */
+export const FIELD_FRAME_TIME = HOOK_STAGES.slice(0, 2).reduce((s, [, d]) => s + d, 0) + 2;
 const ALL_ON = { a: true, b: true, c: true } as const;
 
 function rotor(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number, angle: number) {
@@ -63,27 +66,41 @@ function rotor(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number,
   ctx.stroke();
 }
 
-/** @param still  draw a single frame at this electrical angle (used for the Open Graph card) */
-export function HookFigure({ still }: { still?: number } = {}) {
+/**
+ * @param still     draw a single frame at this loop time, s (the Open Graph card)
+ * @param onFrame   called with each drawn frame (the clip view syncs its captions to it)
+ */
+export function HookFigure({ still, onFrame }: { still?: number; onFrame?: (frame: HookFrame) => void } = {}) {
   const { d } = useI18n();
-  const wt = useRef(still ?? 1.1);
-  const animate = still === undefined && !prefersReducedMotion();
+  const reduced = prefersReducedMotion();
+  // reduced motion: a still frame with the rotor locked on
+  const loop = useRef(still ?? (reduced ? LOCKED_FRAME_TIME : 0));
+  const wt = useRef(1.1);
+  const animate = still === undefined && !reduced;
 
   const { boxRef, canvasRef } = useCanvasFigure(({ ctx, w, h, dt }) => {
+    loop.current += dt;
     wt.current = (wt.current + (2 * Math.PI * dt) / HOOK_CYCLE_S) % (2 * Math.PI);
+    const frame = hookFrame(loop.current);
+    onFrame?.(frame);
     const L = layoutSquare(w);
     const { g } = L;
     ctx.fillStyle = INK.bg;
     ctx.fillRect(0, 0, w, h);
-    const f = statorField(wt.current);
-    const ang = Math.atan2(f.net.im, f.net.re);
+    const field = statorGapField(wt.current, ALL_ON, frame.envelope);
     statorIron(ctx, g);
-    gapField(ctx, g, (th) => 1.5 * Math.cos(th - ang), CONCEPT.stator, 1.5);
-    winding(ctx, L, PHASES, wt.current, ALL_ON, { letters: false, planes: false });
-    const rr = g.rb - (g.ro - g.rb) * 0.16;
-    rotor(ctx, g.cx, g.cy, rr, ang - HOOK_LAG);
-    const [x2, y2] = pt(g.cx, g.cy, rr * 0.72, ang - HOOK_LAG);
-    arrow(ctx, g.cx, g.cy, x2, y2, CONCEPT.rotor, Math.max(5, w * 0.014), { glow: 1 });
+    magnetField(ctx, g, field, CONCEPT.stator, 1.5, { letterSize: Math.max(18, g.ro * 0.11), lines: true });
+    winding(ctx, L, PHASES, wt.current, ALL_ON, { letters: false, planes: false, envelope: frame.envelope });
+    if (frame.rotor > 0.01) {
+      const rr = g.rb - (g.ro - g.rb) * 0.16;
+      const angle = field.axis - frame.lag;
+      ctx.save();
+      ctx.globalAlpha = frame.rotor;
+      rotor(ctx, g.cx, g.cy, rr, angle);
+      ctx.restore();
+      const [x2, y2] = pt(g.cx, g.cy, rr * 0.72, angle);
+      arrow(ctx, g.cx, g.cy, x2, y2, CONCEPT.rotor, Math.max(6, g.ro * 0.04), { glow: 1, opacity: frame.rotor });
+    }
   }, animate);
 
   return <FigureFrame boxRef={boxRef} canvasRef={canvasRef} aspect={1} label={d.essay.hook.figureLabel} className="fig--hook" />;

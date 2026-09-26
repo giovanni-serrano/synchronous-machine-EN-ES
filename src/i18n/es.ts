@@ -355,6 +355,8 @@ export const es: Dictionary = {
       figureLabel:
         'Corte de un estator con tres bobinas. Sus campos pulsantes se suman en un solo campo de intensidad constante que gira.',
       sum: 'suma',
+      showSum: 'Sumarlos punta con cola',
+      showParts: 'Volver a sus propios ejes',
       coilOff: 'La bobina {phase} está apagada.',
       coilOn: 'La bobina {phase} está encendida.',
     },
@@ -366,8 +368,13 @@ export const es: Dictionary = {
     },
     next: {
       title: 'Lo que sigue: el rotor',
-      body: 'Deja caer un imán en este campo giratorio y lo persigue hasta engancharse. Esa es la próxima sección. Mientras se escribe, puedes explorar la máquina completa.',
-      link: 'Explorar la máquina completa (vista previa)',
+      body: 'Deja caer un imán en este campo giratorio y lo persigue hasta engancharse. Esa es la próxima sección, muy pronto.',
+    },
+    clip: {
+      caption0: 'Tres bobinas. Nada se mueve.',
+      caption1: 'Tres corrientes crean un imán que gira.',
+      caption2: 'Ahora pon un rotor adentro…',
+      caption3: '…y se engancha.',
     },
     footer: {
       license: 'Código MIT · texto CC BY 4.0',

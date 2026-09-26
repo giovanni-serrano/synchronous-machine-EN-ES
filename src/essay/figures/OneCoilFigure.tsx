@@ -1,14 +1,16 @@
 /**
- * §2 One coil: a single phase winding (phase a) with an alternating current. Its field points along the coil's axis
- * and only pulses — B ∝ i(t) — which the reader discovers by dragging along the current wave.
+ * §2 One coil: a single phase winding (phase a) with an alternating current. Its field is a magnet — an N and an S lobe
+ * in the gap, from the model's B_r(θ) — that grows, shrinks and flips on the coil's axis but never turns (B ∝ i(t)),
+ * which the reader discovers by dragging along the current wave.
  */
 
 import { useRef, type PointerEvent } from 'react';
-import { PHASE_AXES, sinusoidalGapField, type PhaseId } from '../../physics';
+import { PHASE_AXES, type PhaseId } from '../../physics';
 import { useI18n } from '../../i18n/I18nProvider';
-import { arrow, gapField, pt, statorIron, symbol } from '../canvas/draw';
+import { arrow, magnetField, pt, statorIron, symbol } from '../canvas/draw';
 import { useCanvasFigure } from '../canvas/useCanvasFigure';
 import { CONCEPT, INK } from '../theme';
+import { statorGapField } from './fieldModel';
 import { FigureFrame, localPoint } from './FigureFrame';
 import { inStrip, layoutWithStrip, phaseCurrent, stripAngle, waveStrip, winding, type SceneLayout } from './statorScene';
 import { useScrubTime } from './useScrubTime';
@@ -24,7 +26,7 @@ export function OneCoilFigure() {
 
   const { boxRef, canvasRef, invalidate } = useCanvasFigure(({ ctx, w, h, dt }) => {
     const wt = t.advance(dt);
-    const L = layoutWithStrip(w);
+    const L = layoutWithStrip(w, h);
     layout.current = L;
     const { g } = L;
     ctx.fillStyle = INK.bg;
@@ -32,18 +34,20 @@ export function OneCoilFigure() {
 
     const i = phaseCurrent('a', wt);
     statorIron(ctx, g);
-    gapField(ctx, g, (th) => sinusoidalGapField(th, PHASE_AXES.a, 2, i), CONCEPT.stator, 1.5);
-    winding(ctx, L, ONLY_A, wt, ENABLED);
+    magnetField(ctx, g, statorGapField(wt, ENABLED), CONCEPT.stator, 1.5, { letterSize: Math.max(16, g.ro * 0.1) });
+    winding(ctx, L, ONLY_A, wt, ENABLED, { letterSize: Math.max(15, g.ro * 0.085) });
 
     // Field along the coil's axis: length and sign follow the current.
     const [x2, y2] = pt(g.cx, g.cy, L.unit * i, PHASE_AXES.a);
-    arrow(ctx, g.cx, g.cy, x2, y2, CONCEPT.stator, Math.max(5, w * 0.016), { glow: 1 });
+    arrow(ctx, g.cx, g.cy, x2, y2, CONCEPT.stator, Math.max(6, g.ro * 0.045), { glow: 1 });
     ctx.fillStyle = INK.textFaint;
     ctx.beginPath();
     ctx.arc(g.cx, g.cy, 3, 0, 2 * Math.PI);
     ctx.fill();
-    const tip = Math.abs(i) > 0.15 ? pt(g.cx, g.cy, L.unit * i + (i >= 0 ? 22 : -22), PHASE_AXES.a) : pt(g.cx, g.cy, 22, PHASE_AXES.a);
-    symbol(ctx, 'B', '', tip[0], tip[1] - 20, Math.max(18, w * 0.05));
+    if (Math.abs(i) > 0.15) {
+      const tip = pt(g.cx, g.cy, L.unit * i + (i >= 0 ? 22 : -22), PHASE_AXES.a);
+      symbol(ctx, 'B', '', tip[0], tip[1] - 22, Math.max(20, g.ro * 0.12));
+    }
 
     waveStrip(ctx, L, ONLY_A, wt, ENABLED, d.essay.oneCoil.current, 'a');
   }, t.playing);
@@ -60,7 +64,7 @@ export function OneCoilFigure() {
     <FigureFrame
       boxRef={boxRef}
       canvasRef={canvasRef}
-      aspect={5 / 6}
+      className="fig--scene"
       label={d.essay.oneCoil.figureLabel}
       instruction={d.essay.oneCoil.instruction}
       keysHint={d.essay.figure.keysTime}
