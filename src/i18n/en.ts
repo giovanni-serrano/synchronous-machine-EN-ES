@@ -242,6 +242,36 @@ export const en = {
     pullOut: { hook: 'What happens when you ask for too much?' },
   },
 
+  powers: {
+    title: 'Power: P, Q and S',
+    planeLabel: 'Power triangle on the complex plane',
+    reAxis: 'Re · P',
+    imAxis: 'Im · jQ',
+    up: '+Q lagging',
+    down: '−Q leading',
+    rated: 'rated S',
+    zoomNote: 'scale ×½',
+    pfLine: '{pf} = {value} · {kind}',
+    upMeans: {
+      motor: 'Motor convention (active mode): Q > 0 is Q absorbed from the grid = lagging.',
+      generator: 'Generator convention (active mode): Q > 0 is Q delivered to the grid = lagging.',
+    },
+    realPart: 'Real part P: the energy delivered on average — it does the work.',
+    imagPart: 'Imaginary part Q: energy that goes back and forth with the magnetic fields.',
+    jNote: 'j only marks a 90° rotation, a quarter-cycle shift: nothing about Q is "imaginary".',
+    sNote: '|S| = √(P² + Q²) = 3 V_φ I_A: the current the windings must carry. That is why S sizes the machine (dashed circle: rated S).',
+    targetsLabel: 'Power factor at this P',
+    targetsHint: 'The model solves the excitation I_F for each target; P stays the same.',
+    targetsNeedLoad: 'Set a load first: at P = 0 there is no power factor to choose.',
+    targetInfeasible: 'This PF needs I_F = {value}, beyond the field limit: I_F stopped at its maximum.',
+    currentTitle: 'Same P, lower PF → more current',
+    currentAxis: 'I_A needed for P = {p}',
+    currentNow: 'now',
+    currentRated: 'rated',
+    currentNote:
+      'Lagging or leading, the same PF needs the same current. Q carries no net energy, but its current heats the windings.',
+  },
+
   machineControls: {
     title: 'Machine controls',
     shaftPower: 'Shaft power',

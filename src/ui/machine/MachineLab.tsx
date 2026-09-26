@@ -8,7 +8,9 @@ import { useEffect, useState } from 'react';
 import {
   REFERENCE_MACHINE,
   SCENARIOS,
+  deriveRatings,
   energyFlow,
+  powerTriangle,
   presentOperatingPoint,
   scenarioById,
   scenarioInputs,
@@ -35,8 +37,10 @@ import { COLORS } from '../theme';
 import { ElectricalSumInset } from './ElectricalSumInset';
 import { EnergyFlowDiagram } from './EnergyFlowDiagram';
 import { MachineView, type MachineShow } from './MachineView';
+import { PowerPanel } from '../power/PowerPanel';
 
 const M = REFERENCE_MACHINE;
+const RATINGS = deriveRatings(M);
 const POLE_OPTIONS = [2, 4, 6, 8] as const;
 /** Shaft-power slider range, W (1.5 pu: enough to push most excitations past P_max). */
 export const LOAD_MAX = 150_000;
@@ -79,6 +83,9 @@ export function MachineLab() {
   const convention: Convention = continuous ? drawingConvention : state.convention;
   const pr = state.op ? presentOperatingPoint(state.op, state.convention, convention) : null;
   const flow = state.op ? energyFlow(state.op) : null;
+  const tri = state.op ? powerTriangle(state.op, state.convention) : null;
+  const pWord = flow ? { delivers: d.gridView.pDelivers, absorbs: d.gridView.pAbsorbs, none: d.gridView.pNone }[flow.grid.p.direction] : '';
+  const qWord = flow ? { delivers: d.gridView.qDelivers, absorbs: d.gridView.qAbsorbs, none: d.gridView.qNone }[flow.grid.q.direction] : '';
   const step = stepper(clock, inputs.f);
   useTransportKeys(clock, step);
 
@@ -132,6 +139,13 @@ export function MachineLab() {
                 {d.stability.recoverHint}
               </div>
             )}
+            <div className="machine__transport">
+              <TransportControls clock={clock} step={step} speed={speed} onSpeed={setSpeed} />
+              <p className="readouts__note">
+                {interpolate(d.assumptions.slowMotion, { rpm: fmt.number(state.nSync, 0) })} (
+                {interpolate(d.fieldLab.slowMotionFactor, { factor: fmt.number(slowMotionFactor(speed), 0) })})
+              </p>
+            </div>
             <div className="chips chips--legend">
               <ToggleChip checked={show.bR} onChange={toggle('bR')} swatch={COLORS.eA}>
                 <SymbolText text={d.machineLab.rotorField} />
@@ -337,80 +351,131 @@ export function MachineLab() {
             </div>
           </section>
 
-          <section className="panel" aria-labelledby="op-title">
-            <h3 id="op-title" className="panel__title">
-              {d.machineLab.operatingPoint}
-            </h3>
-            <dl className="readouts">
-              <div className="readout readout--hero">
-                <dt>{d.machineLab.deltaInside}</dt>
-                <dd>
-                  {deltaMechText} <small>{d.machineLab.mechanicalShort}</small>
-                </dd>
-              </div>
-              <div className="readout">
-                <dt>
-                  <SymbolText text={d.machineLab.deltaPhasor} />
-                </dt>
-                <dd>
-                  {deltaElecText} <small>{d.machineLab.electricalShort}</small>
-                </dd>
-              </div>
-              <p className="readouts__note">
-                <SymbolText text={relation} />
-              </p>
-              <div className="readout">
-                <dt>{d.machineMode.label}</dt>
-                <dd>{d.machineMode[state.operatingMode]}</dd>
-              </div>
-              <div className="readout">
-                <dt>
-                  {d.quantities.nSync} <SymbolText text={d.symbols.nSync} />
-                </dt>
-                <dd>{fmt.rpm(state.nSync)}</dd>
-              </div>
-              <div className="readout">
-                <dt>
-                  {d.quantities.iA} <SymbolText text="I_A" />
-                </dt>
-                <dd>{pr ? fmt.current(pr.iAMag) : '—'}</dd>
-              </div>
-              <div className="readout">
-                <dt>
-                  {d.quantities.torque} <SymbolText text="τ_ind" />
-                </dt>
-                <dd>
-                  {pr ? fmt.torque(pr.torqueMag) : '—'}
-                  {pr && pr.torqueAction !== 'none' && <span className="readout__qualifier"> · {d.torque[pr.torqueAction]}</span>}
-                </dd>
-              </div>
-              <div className="readout">
-                <dt>
-                  <SymbolText text={d.stability.margin} />
-                </dt>
-                <dd>{Number.isFinite(state.loadRatio) ? fmt.percent(state.loadRatio) : '—'}</dd>
-              </div>
-              <p className="readouts__note convention-note">
-                <SymbolText text={d.convention[convention]} />
-              </p>
-              <p className="readouts__note">
-                <SymbolText text={`${d.assumptions.infiniteBus} ${d.assumptions.cylindricalRotor}`} />
-              </p>
-            </dl>
-          </section>
-
-          <section className="panel" aria-label={d.fieldLab.playback}>
-            <h3 className="panel__title">{d.fieldLab.playback}</h3>
-            <div className="controls__group">
-              <TransportControls clock={clock} step={step} speed={speed} onSpeed={setSpeed} />
-              <p className="readouts__note">
-                {interpolate(d.assumptions.slowMotion, { rpm: fmt.number(state.nSync, 0) })} (
-                {interpolate(d.fieldLab.slowMotionFactor, { factor: fmt.number(slowMotionFactor(speed), 0) })})
-              </p>
-            </div>
-          </section>
+          <PowerPanel
+            params={M}
+            inputs={inputs}
+            tri={tri}
+            grid={flow ? flow.grid : null}
+            vPhi={state.vPhi}
+            iAMag={pr ? pr.iAMag : 0}
+            iRated={RATINGS.iRated}
+            onField={(iF) => set({ iF })}
+          />
         </div>
       </div>
+
+      <section className="panel panel--readouts" aria-labelledby="op-title">
+        <h3 id="op-title" className="panel__title">
+          {d.machineLab.operatingPoint}
+        </h3>
+        <dl className="readouts readouts--strip">
+          <div className="readout readout--hero">
+            <dt>{d.machineLab.deltaInside}</dt>
+            <dd>
+              {deltaMechText} <small>{d.machineLab.mechanicalShort}</small>
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              <SymbolText text={d.machineLab.deltaPhasor} />
+            </dt>
+            <dd>
+              {deltaElecText} <small>{d.machineLab.electricalShort}</small>
+              {relation && (
+                <span className="readout__qualifier">
+                  {' · '}
+                  <SymbolText text={relation} />
+                </span>
+              )}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>{d.machineMode.label}</dt>
+            <dd>{d.machineMode[state.operatingMode]}</dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.p} <SymbolText text="P" />
+            </dt>
+            <dd>
+              {flow ? fmt.power(flow.grid.p.magnitude, 'W') : '—'}
+              {flow && <span className="readout__qualifier"> · {pWord}</span>}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.q} <SymbolText text="Q" />
+            </dt>
+            <dd>
+              {flow ? fmt.power(flow.grid.q.magnitude, 'var') : '—'}
+              {flow && <span className="readout__qualifier"> · {qWord}</span>}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.s} <SymbolText text="S" />
+            </dt>
+            <dd>{tri ? fmt.power(tri.s, 'VA') : '—'}</dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.pf} {d.symbols.pfAbbrev}
+            </dt>
+            <dd>
+              {tri ? fmt.number(tri.pf, 2) : '—'}
+              {tri && <span className="readout__qualifier"> · {d.powerFactor[tri.pfKind]}</span>}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.theta} θ
+            </dt>
+            <dd>
+              {tri ? fmt.degrees(Math.abs(tri.theta)) : '—'}
+              {tri && tri.pfKind !== 'unity' && (
+                <span className="readout__qualifier">
+                  {' · '}
+                  <SymbolText text={tri.pfKind === 'lagging' ? d.angles.iALags : d.angles.iALeads} />
+                </span>
+              )}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.nSync} <SymbolText text={d.symbols.nSync} />
+            </dt>
+            <dd>{fmt.rpm(state.nSync)}</dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.iA} <SymbolText text="I_A" />
+            </dt>
+            <dd>{pr ? fmt.current(pr.iAMag) : '—'}</dd>
+          </div>
+          <div className="readout">
+            <dt>
+              {d.quantities.torque} <SymbolText text="τ_ind" />
+            </dt>
+            <dd>
+              {pr ? fmt.torque(pr.torqueMag) : '—'}
+              {pr && pr.torqueAction !== 'none' && <span className="readout__qualifier"> · {d.torque[pr.torqueAction]}</span>}
+            </dd>
+          </div>
+          <div className="readout">
+            <dt>
+              <SymbolText text={d.stability.margin} />
+            </dt>
+            <dd>{Number.isFinite(state.loadRatio) ? fmt.percent(state.loadRatio) : '—'}</dd>
+          </div>
+        </dl>
+        <p className="readouts__note convention-note">
+          <SymbolText text={d.convention[convention]} />
+        </p>
+        <p className="readouts__note">{d.powerFactor.thetaNote}</p>
+        <p className="readouts__note">
+          <SymbolText text={`${d.assumptions.infiniteBus} ${d.assumptions.cylindricalRotor}`} />
+        </p>
+      </section>
     </section>
   );
 }

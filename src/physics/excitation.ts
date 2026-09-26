@@ -59,6 +59,15 @@ export function solveFieldForPowerFactor(
   return { iF: Math.min(params.ifMax, Math.max(0, iFExact)), eA, feasible };
 }
 
+/**
+ * |I_A| needed to carry |P| at a given power factor: I_A = |P| / (3 V_φ PF) (brief §5.9: with the same P, a lower PF
+ * needs more current). Lagging and leading at the same PF need the same current.
+ */
+export function armatureCurrentAtPf(pAbs: number, vPhi: number, pf: number): number {
+  const pfc = Math.min(1, Math.max(1e-3, pf));
+  return Math.abs(pAbs) / (3 * vPhi * pfc);
+}
+
 export interface VCurvePoint {
   readonly iF: number;
   /** |I_A|, A. NaN beyond the stability limit. */

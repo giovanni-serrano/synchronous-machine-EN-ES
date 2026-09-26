@@ -711,3 +711,97 @@ button {
 .convention-note {
   color: var(--text);
 }
+
+/* ---------- Phase 5: powers ---------- */
+
+.svg-label--dim {
+  fill: var(--text-dim);
+}
+
+.svg-label--em {
+  font-weight: 600;
+}
+
+/* Playback sits under the cross-section, next to what it animates */
+.machine__transport {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Operating point: full-width strip under both columns (brief §8) */
+.panel--readouts {
+  margin-top: 16px;
+}
+
+.readouts--strip {
+  grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr));
+  column-gap: 28px;
+  row-gap: 8px;
+  margin-bottom: 10px;
+}
+
+.readouts--strip .readout dd {
+  white-space: normal;
+  text-align: right;
+}
+
+.readouts--strip .readout--hero dd {
+  font-size: 1.25rem;
+}
+
+/* Powers panel */
+.powers__top {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.powers__summary {
+  display: grid;
+  gap: 6px;
+}
+
+.powers__pf {
+  margin: 0;
+  font-family: var(--font-num);
+  font-size: 1rem;
+}
+
+.triangle,
+.pf-bars {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.powers__targets {
+  margin-top: 12px;
+}
+
+.powers__targets .banner {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.powers__current {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.pf-bars {
+  max-width: 460px;
+  margin-top: 4px;
+}
+
+@media (max-width: 1180px) {
+  .powers__top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .triangle {
+    max-width: 420px;
+  }
+}

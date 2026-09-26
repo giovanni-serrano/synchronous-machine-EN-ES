@@ -264,6 +264,36 @@ export const es: Dictionary = {
     pullOut: { hook: '¿Qué pasa si le pides demasiado?' },
   },
 
+  powers: {
+    title: 'Potencias: P, Q y S',
+    planeLabel: 'Triángulo de potencia en el plano complejo',
+    reAxis: 'Re · P',
+    imAxis: 'Im · jQ',
+    up: '+Q en retraso',
+    down: '−Q en adelanto',
+    rated: 'S nominal',
+    zoomNote: 'escala ×½',
+    pfLine: '{pf} = {value} · {kind}',
+    upMeans: {
+      motor: 'Convención de motor (modo activo): Q > 0 es Q absorbida de la red = en retraso.',
+      generator: 'Convención de generador (modo activo): Q > 0 es Q entregada a la red = en retraso.',
+    },
+    realPart: 'Parte real P: la energía que se entrega en promedio; es la que hace trabajo.',
+    imagPart: 'Parte imaginaria Q: la energía que va y vuelve con los campos magnéticos.',
+    jNote: 'La j solo indica una rotación de 90°, un desfase de un cuarto de ciclo: Q no tiene nada de "imaginario".',
+    sNote: '|S| = √(P² + Q²) = 3 V_φ I_A: la corriente que deben llevar los devanados. Por eso S dimensiona la máquina (círculo punteado: S nominal).',
+    targetsLabel: 'Factor de potencia con esta P',
+    targetsHint: 'El modelo calcula la excitación I_F para cada objetivo; P no cambia.',
+    targetsNeedLoad: 'Primero aplica una carga: con P = 0 no hay factor de potencia que elegir.',
+    targetInfeasible: 'Este FP necesita I_F = {value}, más allá del límite del campo: I_F quedó en su máximo.',
+    currentTitle: 'Misma P, menor FP → más corriente',
+    currentAxis: 'I_A necesaria para P = {p}',
+    currentNow: 'ahora',
+    currentRated: 'nominal',
+    currentNote:
+      'En retraso o en adelanto, el mismo FP exige la misma corriente. Q no transporta energía neta, pero su corriente calienta los devanados.',
+  },
+
   machineControls: {
     title: 'Controles de la máquina',
     shaftPower: 'Potencia en el eje',

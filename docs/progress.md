@@ -12,7 +12,7 @@ Architecture: [architecture.md](architecture.md).
 | 2 | Rotating magnetic field | Done (+ coil-axes enhancement) |
 | 3 | Machine view (2.5D cross-section) | **Done** |
 | 4 | Motor / generator | **Done** |
-| 5 | P, Q, S and PF | Not started |
+| 5 | P, Q, S and PF | **Done** |
 | 6 | Phasors | Not started |
 | 7 | Excitation, δ, stability, V curves (+ qualitative transients) | Not started |
 | 8 | Guided lesson | Not started |
@@ -119,7 +119,35 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 - The torque action is part of the torque row: "530.5 N·m · drives the rotor" / "· opposes the rotation".
 - Energy-flow viewBox trimmed to its content (less empty band above and below).
 - Smoke test checks the column placement and the merged torque row.
-- Next (Phase 5): P, Q, S and PF — power triangle linked to the machine, S = P + jQ, lagging/leading, PF scenarios.
+
+## Phase 5 — delivered
+
+- `powerTriangle(op, modeConvention)` in `presentation.ts`: S = P + jQ in the convention of the **active mode** (the
+  one that decides lagging / leading), so "up" always means lagging, motor or generator; independent of a locked drawing
+  convention (tested against `presentOperatingPoint` for both locked conventions).
+- `armatureCurrentAtPf(|P|, V_φ, PF)` in `excitation.ts`: I_A = |P| / (3 V_φ PF).
+- **Power panel** (right column, below the controls):
+  - Triangle on the complex plane — P along Re (violet, solid), jQ vertical (red, dashed as in the energy flow), S from
+    the origin (neutral), θ arc, dashed rated-S circle. Fixed scale (1 pu = 80 px), zooms out ×½ only if the triangle
+    would leave the plot. θ is labelled "θ" at its arc; its value is in the PF line next to the plot.
+  - PF line, what "Q > 0" means in the active convention, "seen from the grid" and the unifying idea.
+  - S = P + jQ explained: real part = energy delivered on average; imaginary part = energy exchanged with the fields;
+    j = a 90° rotation; |S| = 3 V_φ I_A sizes the machine.
+  - **PF targets** 1.00 / 0.90 lagging / 0.90 leading / 0.70 lagging: the model solves I_F at the present P (the
+    excitation slider moves by itself); disabled at P = 0; a warning shows the required I_F if it is beyond the field
+    limit.
+  - **Same P, lower PF → more current**: I_A bars for "now", PF 1.00, 0.90, 0.70 against the rated current.
+- **Layout**: operating-point readouts are now a full-width strip under both columns (brief §8), with P, Q (magnitude +
+  delivers/absorbs, convention-free), S, PF (lagging/leading), θ (I_A lags/leads V_φ), δ inside and between E_A and V_φ,
+  n_sync, I_A, τ_ind, P/P_max. Playback moved under the cross-section, next to what it animates.
+  At 1400 px the left column ends ~165 px above the right one; to be rebalanced in Phase 6 with the phasor diagram.
+- Tests: power triangle physics (|S|² = P² + Q², over/under-excited orientation in both modes, PF targets round trip,
+  hand-calculated currents 120.28 / 133.64 / 171.83 A at 100 kW), triangle label layout (no overlaps, inside the plot,
+  over the whole slider range, EN and ES). Mutation check: forcing the generator convention in `powerTriangle` makes 8
+  of 15 power tests fail. 160 tests passing.
+- Verified in Edge: motor 0.70 lagging (EN), motor 0.90 leading (ES), desktop 1400 px and 390 px without overflow.
+- Polish backlog (Phase 10): the PF bar labels are also small at phone width.
+- Next (Phase 6): dynamic phasor diagram linked to the machine and the triangle.
 
 ## Decisions log
 
@@ -144,6 +172,9 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D18 | Field lab opens with 2 poles (single resultant across the bore); the machine views will default to the reference 4 poles. | RotatingFieldLab.tsx |
 | D19 | "The machine" is the default tab (the machine is the visual protagonist, brief §7); the field lab stays one click away. | App.tsx |
 | D20 | Until Phase 4 the machine view is driven by scenarios A–G; it defaults to scenario A at the reference 4 poles. | MachineLab.tsx |
+| D21 | The power triangle is drawn in the active mode's convention (P ≥ 0, up = Q > 0 = lagging), like PF; the readouts strip shows P and Q as magnitudes with delivers/absorbs (grid view). | presentation.ts, PowerPanel.tsx |
+| D22 | Operating-point readouts form a full-width strip under both columns; playback sits under the cross-section. | MachineLab.tsx |
+| D23 | In the triangle θ is labelled by its letter only; its value is in the PF line (labels would otherwise be as large as the triangle). | PowerTriangle.tsx |
 | D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
 ## Checkpoint 1 — outcome (approved)

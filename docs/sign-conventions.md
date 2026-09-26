@@ -78,6 +78,8 @@ In the convention of the active mode, **lagging ⇔ Q > 0 ⇔ I_A lags V_φ**. E
 (Q_delivered = 3 V_φ (E_A cos δ − V_φ) / X_S, and cos δ does not care about the sign of δ).
 
 PF and θ are always evaluated in the convention of the **active mode**, even if a scene locks the drawing convention.
+The **power triangle** uses the same convention (`powerTriangle()`): P ≥ 0, and "up" (Q > 0) always means lagging —
+Q absorbed for the motor, Q delivered for the generator. The UI states which one next to the triangle.
 
 ---
 

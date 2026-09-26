@@ -69,7 +69,8 @@ src/
     icons.tsx         Transport icons
     controls/Transport.tsx  Shared play/step/speed controls and keyboard shortcuts
     fieldLab/         Phase 2: RotatingFieldLab, AirGapView, SpaceVectorDiagram, PhaseCurrentsPlot
-    machine/          StatorDrawing (shared stator + coil axes), MachineView, MachineLab (Phase 3)
+    machine/          StatorDrawing (shared stator + coil axes), MachineView, MachineLab, EnergyFlowDiagram (Phases 3–4)
+    power/            PowerPanel, PowerTriangle + triangleLayout (pure, tested), CurrentByPf (Phase 5)
   App.tsx, main.tsx
 tests/                Vitest: physics, i18n, infrastructure, render smoke test
 docs/                 Documentation (English)

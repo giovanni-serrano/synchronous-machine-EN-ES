@@ -141,3 +141,39 @@ export function energyFlow(op: OperatingPoint): EnergyFlow {
     grid.p.direction === 'delivers' ? 'intoMachine' : grid.p.direction === 'absorbs' ? 'outOfMachine' : 'none';
   return { grid, shaft: { direction, magnitude: Math.abs(op.p) } };
 }
+
+/**
+ * Power triangle S = P + jQ in the convention of the ACTIVE MODE (brief §5.8, §5.9) — the same convention that decides
+ * lagging / leading, even when a scene locks the drawing convention. P ≥ 0 (the mode follows the sign of P);
+ * Q > 0 ⇔ lagging, so "up" on the complex plane always means lagging, motor or generator.
+ */
+export interface PowerTriangle {
+  readonly modeConvention: Convention;
+  /** P in the mode convention, W (generator: delivered; motor: absorbed). ≥ 0 up to rounding. */
+  readonly p: number;
+  /** Q in the mode convention, var: > 0 lagging, < 0 leading. */
+  readonly q: number;
+  /** |S|, VA. */
+  readonly s: number;
+  /** PF = cos θ = |P| / |S| (1 when S = 0). */
+  readonly pf: number;
+  readonly pfKind: PfKind;
+  /** θ = atan2(Q, P), rad: > 0 lagging, < 0 leading. */
+  readonly theta: number;
+}
+
+export function powerTriangle(op: OperatingPoint, modeConvention: Convention): PowerTriangle {
+  const modeSign = modeConvention === 'generator' ? 1 : -1;
+  const p = modeSign * op.p;
+  const unity = isZero(op.q, op.s);
+  const q = unity ? 0 : modeSign * op.q;
+  return {
+    modeConvention,
+    p,
+    q,
+    s: op.s,
+    pf: op.s > 0 ? Math.abs(op.p) / op.s : 1,
+    pfKind: unity ? 'unity' : q > 0 ? 'lagging' : 'leading',
+    theta: op.s > 0 ? Math.atan2(q, p) : 0,
+  };
+}
