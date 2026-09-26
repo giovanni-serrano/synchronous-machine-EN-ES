@@ -115,78 +115,94 @@ export function MachineLab() {
       </header>
 
       <div className="lab__grid">
-        <figure className="panel panel--machine">
-          <figcaption className="panel__title">
-            {d.machineLab.viewTitle} · {d.machineMode[state.operatingMode]}
-          </figcaption>
-          {snap ? (
-            <div className={inputs.poles > 2 ? 'machine-wrap machine-wrap--inset' : 'machine-wrap'}>
-              <MachineView snap={snap} poles={inputs.poles} show={show} highlight={highlight} onHighlight={setHighlight} />
-              {inputs.poles > 2 && <ElectricalSumInset snap={snap} />}
-            </div>
-          ) : (
-            <div className="banner banner--critical" role="alert">
-              <strong>{d.stability.lost}.</strong> <SymbolText text={d.stability.lostExplanation} />
-              <br />
-              {d.stability.recoverHint}
-            </div>
-          )}
-          <div className="chips chips--legend">
-            <ToggleChip checked={show.bR} onChange={toggle('bR')} swatch={COLORS.eA}>
-              <SymbolText text={d.machineLab.rotorField} />
-            </ToggleChip>
-            <ToggleChip checked={show.bS} onChange={toggle('bS')} swatch={COLORS.iA}>
-              <SymbolText text={d.machineLab.statorField} />
-            </ToggleChip>
-            <ToggleChip checked={show.bNet} onChange={toggle('bNet')} swatch={COLORS.vPhi}>
-              <SymbolText text={d.machineLab.netField} />
-            </ToggleChip>
-            {inputs.poles === 2 && (
-              <ToggleChip checked={show.sum} onChange={toggle('sum')}>
-                <SymbolText text={d.machineLab.vectorSum} />
-              </ToggleChip>
+        <div className="lab__main">
+          <figure className="panel panel--machine">
+            <figcaption className="panel__title">
+              {d.machineLab.viewTitle} · {d.machineMode[state.operatingMode]}
+            </figcaption>
+            {snap ? (
+              <div className={inputs.poles > 2 ? 'machine-wrap machine-wrap--inset' : 'machine-wrap'}>
+                <MachineView snap={snap} poles={inputs.poles} show={show} highlight={highlight} onHighlight={setHighlight} />
+                {inputs.poles > 2 && <ElectricalSumInset snap={snap} />}
+              </div>
+            ) : (
+              <div className="banner banner--critical" role="alert">
+                <strong>{d.stability.lost}.</strong> <SymbolText text={d.stability.lostExplanation} />
+                <br />
+                {d.stability.recoverHint}
+              </div>
             )}
-            <ToggleChip checked={show.delta} onChange={toggle('delta')}>
-              {d.machineLab.deltaArc}
-            </ToggleChip>
-            <ToggleChip checked={show.flux} onChange={toggle('flux')}>
-              {d.machineLab.gapFlux}
-            </ToggleChip>
-            <ToggleChip checked={show.axes} onChange={toggle('axes')}>
-              {d.fieldLab.coilAxes}
-            </ToggleChip>
-          </div>
-          <ul className="notes">
-            <li>
-              <SymbolText text={interpolate(d.machineLab.syncNote, { nSync: d.symbols.nSync })} />
-            </li>
-            <li>
-              <SymbolText text={d.angles.deltaBetweenFields} />
-            </li>
-            {snap && (
+            <div className="chips chips--legend">
+              <ToggleChip checked={show.bR} onChange={toggle('bR')} swatch={COLORS.eA}>
+                <SymbolText text={d.machineLab.rotorField} />
+              </ToggleChip>
+              <ToggleChip checked={show.bS} onChange={toggle('bS')} swatch={COLORS.iA}>
+                <SymbolText text={d.machineLab.statorField} />
+              </ToggleChip>
+              <ToggleChip checked={show.bNet} onChange={toggle('bNet')} swatch={COLORS.vPhi}>
+                <SymbolText text={d.machineLab.netField} />
+              </ToggleChip>
+              {inputs.poles === 2 && (
+                <ToggleChip checked={show.sum} onChange={toggle('sum')}>
+                  <SymbolText text={d.machineLab.vectorSum} />
+                </ToggleChip>
+              )}
+              <ToggleChip checked={show.delta} onChange={toggle('delta')}>
+                {d.machineLab.deltaArc}
+              </ToggleChip>
+              <ToggleChip checked={show.flux} onChange={toggle('flux')}>
+                {d.machineLab.gapFlux}
+              </ToggleChip>
+              <ToggleChip checked={show.axes} onChange={toggle('axes')}>
+                {d.fieldLab.coilAxes}
+              </ToggleChip>
+            </div>
+            <ul className="notes">
+              <li>
+                <SymbolText text={interpolate(d.machineLab.syncNote, { nSync: d.symbols.nSync })} />
+              </li>
+              <li>
+                <SymbolText text={d.angles.deltaBetweenFields} />
+              </li>
+              {snap && (
+                <li>
+                  <SymbolText
+                    text={interpolate(d.angles.mechanicalNote, { poles: inputs.poles, deltaElec: deltaElecText, deltaMech: deltaMechText })}
+                  />
+                </li>
+              )}
               <li>
                 <SymbolText
-                  text={interpolate(d.angles.mechanicalNote, { poles: inputs.poles, deltaElec: deltaElecText, deltaMech: deltaMechText })}
+                  text={
+                    inputs.poles === 2 ? d.machineLab.sumNoteTwoPoles : interpolate(d.machineLab.sumNoteManyPoles, { poles: inputs.poles })
+                  }
                 />
               </li>
-            )}
-            <li>
-              <SymbolText
-                text={
-                  inputs.poles === 2 ? d.machineLab.sumNoteTwoPoles : interpolate(d.machineLab.sumNoteManyPoles, { poles: inputs.poles })
-                }
-              />
-            </li>
-            <li>
-              <SymbolText text={d.machineLab.rotorPolesNote} />
-            </li>
-            <li>{d.machineLab.rotation}</li>
-            <li>{d.assumptions.salientDrawing}</li>
-          </ul>
-        </figure>
+              <li>
+                <SymbolText text={d.machineLab.rotorPolesNote} />
+              </li>
+              <li>{d.machineLab.rotation}</li>
+              <li>{d.assumptions.salientDrawing}</li>
+            </ul>
+          </figure>
+
+          <section className="panel panel--energy" aria-labelledby="energy-title">
+            <h3 id="energy-title" className="panel__title">
+              {d.energyFlow.title}
+            </h3>
+            <EnergyFlowDiagram flow={flow} ratedS={M.ratedS} />
+            <p className="scenario">{chain}</p>
+            <ul className="notes">
+              <li>{d.energyFlow.qNote}</li>
+              <li>
+                <SymbolText text={d.assumptions.lossless} />
+              </li>
+            </ul>
+          </section>
+        </div>
 
         <div className="lab__side">
-          <section className="panel" aria-labelledby="controls-title">
+          <section className="panel panel--controls" aria-labelledby="controls-title">
             <h3 id="controls-title" className="panel__title">
               {d.machineControls.title}
             </h3>
@@ -321,20 +337,6 @@ export function MachineLab() {
             </div>
           </section>
 
-          <section className="panel" aria-labelledby="energy-title">
-            <h3 id="energy-title" className="panel__title">
-              {d.energyFlow.title}
-            </h3>
-            <EnergyFlowDiagram flow={flow} ratedS={M.ratedS} />
-            <p className="scenario">{chain}</p>
-            <ul className="notes">
-              <li>{d.energyFlow.qNote}</li>
-              <li>
-                <SymbolText text={d.assumptions.lossless} />
-              </li>
-            </ul>
-          </section>
-
           <section className="panel" aria-labelledby="op-title">
             <h3 id="op-title" className="panel__title">
               {d.machineLab.operatingPoint}
@@ -377,9 +379,11 @@ export function MachineLab() {
                 <dt>
                   {d.quantities.torque} <SymbolText text="τ_ind" />
                 </dt>
-                <dd>{pr ? fmt.torque(pr.torqueMag) : '—'}</dd>
+                <dd>
+                  {pr ? fmt.torque(pr.torqueMag) : '—'}
+                  {pr && pr.torqueAction !== 'none' && <span className="readout__qualifier"> · {d.torque[pr.torqueAction]}</span>}
+                </dd>
               </div>
-              {pr && pr.torqueAction !== 'none' && <p className="readouts__note">{d.torque[pr.torqueAction]}</p>}
               <div className="readout">
                 <dt>
                   <SymbolText text={d.stability.margin} />

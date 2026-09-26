@@ -127,15 +127,27 @@ button {
   gap: 16px;
 }
 
+.lab__main,
 .lab__side {
   display: grid;
   gap: 16px;
   align-content: start;
+  min-width: 0;
 }
 
+/* One column: flatten both columns so the controls come right after the cross-section,
+   then energy flow, operating point and playback. */
 @media (max-width: 900px) {
   .lab__grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .lab__main,
+  .lab__side {
+    display: contents;
+  }
+  .panel--energy,
+  .lab__side > .panel:not(.panel--controls) {
+    order: 1;
   }
 }
 
@@ -440,6 +452,12 @@ button {
   white-space: nowrap;
 }
 
+.readout__qualifier {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
 .readout--hero dd {
   font-size: 1.5rem;
   color: var(--text);
@@ -528,7 +546,9 @@ button {
   font-weight: 600;
 }
 
-/* Cross-section + electrical-sum inset side by side; stacked when narrow */
+/* Cross-section + electrical-sum inset side by side on wide screens. Below that the inset goes under the
+   cross-section as a short horizontal strip (diagram | note), so the left column does not grow much;
+   on phones the strip stacks. */
 .machine-wrap--inset {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(170px, 250px);
@@ -541,8 +561,21 @@ button {
     grid-template-columns: minmax(0, 1fr);
   }
   .machine-wrap--inset .inset {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: center;
+  }
+  .machine-wrap--inset .inset__title {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .machine-wrap--inset .inset {
+    grid-template-columns: minmax(0, 1fr);
     max-width: 280px;
-    margin: 0 auto;
+    margin: 8px auto 0;
   }
 }
 

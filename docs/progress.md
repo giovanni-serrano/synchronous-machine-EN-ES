@@ -107,6 +107,18 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 - Verified in Edge: motor (EN), generator (ES), loss of synchronism, continuous mode (ES), 390 px EN/ES without overflow.
 - Tests: 141 passing.
 - Polish backlog (Phase 10): energy-flow labels are small at phone width.
+
+## Phase 4 review — layout adjustments
+
+- Desktop: the energy-flow panel moved under the cross-section (left column), so fields and energy arrows are visible
+  together when the mode changes. Measured column bottoms at 1400 px: left 1357 px, right 1376 px (EN 1396 / 1399);
+  balanced from 1200 px up. Between 901 and 1180 px the 4-pole inset becomes a horizontal strip under the cross-section
+  (diagram | note) — the left column is still ~300 px longer there, accepted.
+- One column (≤ 900 px): both columns are flattened (`display: contents`) so the order is cross-section, controls,
+  energy flow, operating point, playback — controls stay close to the machine on phones. No horizontal overflow at 390 px.
+- The torque action is part of the torque row: "530.5 N·m · drives the rotor" / "· opposes the rotation".
+- Energy-flow viewBox trimmed to its content (less empty band above and below).
+- Smoke test checks the column placement and the merged torque row.
 - Next (Phase 5): P, Q, S and PF — power triangle linked to the machine, S = P + jQ, lagging/leading, PF scenarios.
 
 ## Decisions log

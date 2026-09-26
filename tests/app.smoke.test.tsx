@@ -21,6 +21,22 @@ describe('app renders in both languages', () => {
       expect(html).not.toContain('NaN');
     });
 
+  it('layout: energy flow sits in the left column; the torque action shares the torque row', () => {
+    const html = renderToString(
+      <I18nProvider initialLang="en">
+        <App />
+      </I18nProvider>,
+    );
+    const main = html.indexOf('lab__main');
+    const side = html.indexOf('lab__side');
+    const energy = html.indexOf('panel--energy');
+    expect(main).toBeGreaterThan(-1);
+    expect(energy).toBeGreaterThan(main);
+    expect(energy).toBeLessThan(side);
+    // Default scenario A is a loaded motor: "<value> · drives the rotor" inside the same <dd>.
+    expect(html).toMatch(/<dd>[^<]*N·m<span class="readout__qualifier"> · <!-- -->drives the rotor<\/span><\/dd>/);
+  });
+
   it('the other language does not leak into Spanish', () => {
     const html = renderToString(
       <I18nProvider initialLang="es">

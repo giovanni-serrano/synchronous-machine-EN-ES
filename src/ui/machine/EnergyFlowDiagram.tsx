@@ -63,7 +63,7 @@ export function EnergyFlowDiagram({ flow, ratedS }: { flow: EnergyFlow | null; r
   const gridArrow = (dir: FlowDirection) => (dir === 'delivers' ? false : true);
 
   return (
-    <svg viewBox="0 0 560 180" className="energy" role="img" aria-label={d.energyFlow.title}>
+    <svg viewBox="0 22 560 140" className="energy" role="img" aria-label={d.energyFlow.title}>
       {/* Blocks */}
       <rect x={14} y={48} width={GRID_X - 14} height={84} rx={4} fill={COLORS.steel} stroke={COLORS.steelEdge} />
       <text x={(14 + GRID_X) / 2} y={94} className="svg-label svg-label--strong" textAnchor="middle">
