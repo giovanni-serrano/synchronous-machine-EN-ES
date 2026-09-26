@@ -28,7 +28,7 @@ Objective IDs refer to [learning-objectives.md](learning-objectives.md).
 
 ### 3 · Synchronous speed — F2, M2 (demo B)
 - **Screen**: stator field N–S pattern; pole selector 2 → 4 → 6; rpm readout.
-- **Beats**: "Twice the poles: the field needs twice as long to go around." → n_sync = 120 f / P → "60 Hz, 4 poles: 1800 rpm."
+- **Beats**: "Twice the poles: the field needs twice as long to go around." → n_sync = 120 f / poles → "60 Hz, 4 poles: 1800 rpm."
 - **Note**: slow motion is declared on screen.
 
 ### 4 · The rotor field locks in — F3, M3, M4 (demo C)
@@ -152,7 +152,7 @@ vector length scaling. No magnitude is exaggerated relative to another of the sa
 | Same grid, half the speed | La misma red, la mitad de velocidad |
 | 2 poles at 60 Hz: 3600 rpm. | 2 polos a 60 Hz: 3600 rpm. |
 | 4 poles: the field has twice as far to go. | 4 polos: el campo tiene el doble de camino. |
-| 1800 rpm. n_sync = 120 f / P | 1800 rpm. n_sinc = 120 f / P |
+| 1800 rpm. n_sync = 120 f / poles | 1800 rpm. n_sinc = 120 f / polos |
 
 **reactive-myth**
 
@@ -171,7 +171,7 @@ vector length scaling. No magnitude is exaggerated relative to another of the sa
 |---|---|
 | One knob decides if the machine gives or takes reactive power | Una perilla decide si la máquina da o toma potencia reactiva |
 | Field down: it borrows magnetism from the grid. | Campo bajo: toma su magnetismo de la red. |
-| Just right: current in step with voltage. | En el punto justo: corriente en fase con la tensión. |
+| Just right: current in step with voltage. | En el punto justo: corriente en fase con el voltaje. |
 | Field up: it supplies magnetism and gives Q back. | Campo alto: aporta el magnetismo y entrega Q. |
 | Same active power the whole time. | La potencia activa nunca cambia. |
 

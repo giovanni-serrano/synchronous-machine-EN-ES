@@ -9,7 +9,7 @@ import {
 } from '../../src/physics';
 import { M, R, expectRel, inputs } from '../helpers';
 
-describe('synchronous speed n_sync = 120 f / P', () => {
+describe('synchronous speed n_sync = 120 f / poles', () => {
   it.each([
     [60, 2, 3600],
     [60, 4, 1800],
@@ -17,7 +17,7 @@ describe('synchronous speed n_sync = 120 f / P', () => {
     [60, 8, 900],
     [50, 2, 3000],
     [50, 4, 1500],
-  ])('f = %d Hz, P = %d → %d rpm', (f, poles, rpm) => {
+  ])('f = %d Hz, %d poles → %d rpm', (f, poles, rpm) => {
     expect(synchronousSpeed(f, poles)).toBe(rpm);
     expect(solveMachine(M, inputs({ f, poles })).nSync).toBe(rpm);
   });
@@ -26,13 +26,13 @@ describe('synchronous speed n_sync = 120 f / P', () => {
     expect(synchronousSpeed(60, 4)).toBe(synchronousSpeed(60, 2) / 2);
   });
 
-  it('ω_m = 2π n_sync / 60 and ω_e = (P/2) ω_m', () => {
+  it('ω_m = 2π n_sync / 60 and ω_e = (poles/2) ω_m', () => {
     const s = solveMachine(M, inputs({ poles: 4 }));
     expectRel(s.omegaM, (2 * Math.PI * 1800) / 60);
     expectRel(s.omegaE, 2 * s.omegaM);
   });
 
-  it('electrical → mechanical angle divides by P/2', () => {
+  it('electrical → mechanical angle divides by poles/2', () => {
     expect(electricalToMechanical(Math.PI / 2, 4)).toBeCloseTo(Math.PI / 4, 12);
     expect(electricalToMechanical(Math.PI / 2, 2)).toBeCloseTo(Math.PI / 2, 12);
   });

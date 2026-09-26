@@ -5,8 +5,8 @@
  *   i_a = I cos ωt,  i_b = I cos(ωt − 120°),  i_c = I cos(ωt − 240°).
  * Each phase contributes a PULSATING vector along its own axis; the sum has constant
  * magnitude 1.5·B_M and rotates counterclockwise at ω (electrical).
- * In a P-pole machine the pattern repeats P/2 times around the air gap, so the field
- * turns at ω / (P/2) mechanically.
+ * With a given number of poles the pattern repeats poles/2 times around the air gap, so the field
+ * turns at ω / (poles/2) mechanically.
  */
 
 import { add, polar, scale, type Complex } from './complex';

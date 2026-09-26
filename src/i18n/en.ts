@@ -108,7 +108,7 @@ export const en = {
     iALeads: 'I_A leads V_φ',
     iAInPhase: 'I_A in phase with V_φ',
     mechanicalNote:
-      'Inside the machine you see δ/(P/2): with {poles} poles, {deltaElec} electrical = {deltaMech} mechanical.',
+      'Inside the machine you see δ/(poles/2): with {poles} poles, {deltaElec} electrical = {deltaMech} mechanical.',
     deltaBetweenFields: 'δ is the angle between B_R and B_net — not between B_R and B_S.',
   },
 

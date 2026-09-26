@@ -140,6 +140,35 @@ describe('continuity from motor to generator (brief §5.4)', () => {
     expect(modeChanges).toBeGreaterThanOrEqual(1);
     expect(modeChanges).toBeLessThanOrEqual(2); // motor → (noLoad) → generator
   });
+
+  /** Sweep P from −100 kW to +100 kW and return the drawn I_A at each step, plus the chord ≤ arc bound per step. */
+  function drawnSweep(iF: number, drawing: 'auto' | 'generator') {
+    const out: Array<{ iA: ReturnType<typeof complex>; bound: number }> = [];
+    let prevDelta: number | null = null;
+    for (let k = 0; k <= 400; k++) {
+      const s = solveMachine(M, withSignedPower(inputs({ iF }), -100_000 + 500 * k));
+      const pr = presentOperatingPoint(s.op!, s.convention, drawing === 'auto' ? s.convention : drawing);
+      const bound = prevDelta === null ? 0 : (s.eA / s.xS) * Math.abs(s.op!.delta - prevDelta) * (1 + 1e-9);
+      out.push({ iA: pr.iA, bound });
+      prevDelta = s.op!.delta;
+    }
+    return out;
+  }
+  const worstJump = (sweep: ReturnType<typeof drawnSweep>) =>
+    Math.max(...sweep.slice(1).map((x, k) => abs(sub(x.iA, sweep[k]!.iA)) - x.bound));
+
+  it('the DRAWN I_A is continuous when the drawing convention is locked (scene 5 / demo H)', () => {
+    expect(worstJump(drawnSweep(6, 'generator'))).toBeLessThanOrEqual(0);
+  });
+
+  it('with E_A = V_φ, the drawn I_A is continuous even with the automatic convention (I_A = 0 at P = 0)', () => {
+    expect(worstJump(drawnSweep(M.ifNoLoad, 'auto'))).toBeLessThanOrEqual(1e-9);
+  });
+
+  it('with the automatic convention and I_A ≠ 0 at P = 0, the drawn I_A flips by 180° — a convention artefact', () => {
+    // Documents why continuous sweeps must lock the drawing convention (sign-conventions.md §5).
+    expect(worstJump(drawnSweep(6, 'auto'))).toBeGreaterThan(40); // ≈ 2 × 27.7 A
+  });
 });
 
 describe('field space vectors (brief §4: δ is between B_R and B_net)', () => {

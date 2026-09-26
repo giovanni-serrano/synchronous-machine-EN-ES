@@ -64,7 +64,7 @@ Avoiding an over-determined model is the single most important structural rule.
 |---|---|
 | `mode` | MOTOR / GENERATOR selector: sets the **direction** of the shaft power. |
 | `f` | Grid frequency (infinite bus). |
-| `poles` | Number of poles P. |
+| `poles` | Number of poles (written out as "poles"; the letter P is reserved for active power). |
 | `vT` | Grid line voltage V_T (infinite bus). |
 | `load` | **Magnitude** of the shaft mechanical power, W (≥ 0): the motor's load or the generator's prime-mover power. |
 | `iF` | Field current I_F (≥ 0). Determines E_A. |
@@ -84,8 +84,8 @@ All from Chapman. **Per-phase formulas use phase values; line formulas use line 
 
 | Relation | Formula | Values |
 |---|---|---|
-| Synchronous speed | n_sync = 120 f / P | — |
-| Mechanical speed | ω_m = 2π n_sync / 60 = ω / (P/2) | — |
+| Synchronous speed | n_sync = 120 f / poles | — |
+| Mechanical speed | ω_m = 2π n_sync / 60 = ω / (poles/2) | — |
 | Internal voltage | E_A = K φ ω, φ ∝ I_F ⇒ E_A = k_field · I_F · (f / f_rated) | per phase |
 | Generator equation | E_A = V_φ + jX_S I_A (I_A leaving the machine) | per phase |
 | Motor equation | V_φ = E_A + jX_S I_A (I_A entering the machine) | per phase |
@@ -118,7 +118,7 @@ re-implements any part of it. Details and the full mapping table are in [sign-co
 
 ## 6. Solving an operating point (`solveMachine`)
 
-1. n_sync = 120 f / P; ω = 2πf; ω_m = 2π n_sync / 60.
+1. n_sync = 120 f / poles; ω = 2πf; ω_m = 2π n_sync / 60.
 2. X_S = X_S,rated · f / f_rated; V_φ = V_T / √3; E_A = k_field · I_F · f / f_rated.
 3. Requested electrical power, internal sign: P = +load (generator) or −load (motor). (Lossless: |P_elec| = P_shaft.)
 4. P_max = 3 V_φ E_A / X_S; load ratio = |P| / P_max.
@@ -238,8 +238,8 @@ Tests: decomposition = sampled v·i; means and amplitude; three-phase sum consta
 
 Phase magnetic axes at 0°, 120°, 240° (electrical); currents i_a = I cos ωt, i_b = I cos(ωt − 120°),
 i_c = I cos(ωt − 240°). Each phase gives a **pulsating** vector along its own axis; their sum has **constant magnitude
-1.5 B_M** and rotates **counterclockwise** at ω (tested). In a P-pole machine the N–S pattern repeats P/2 times, so the
-field turns at ω / (P/2) mechanically — n_sync.
+1.5 B_M** and rotates **counterclockwise** at ω (tested). With a given number of poles the N–S pattern repeats poles/2 times, so the
+field turns at ω / (poles/2) mechanically — n_sync.
 
 ---
 
@@ -257,7 +257,7 @@ B = j·(voltage) / (V_φ,rated · f / f_rated), a single common factor, so that:
   in the generator and drives it in the motor.
 
 Magnitudes are flux in per unit. At time t the whole set rotates by ωt (electrical).
-**Mechanical angles**: the angle you can see inside the machine is δ_mech = δ_elec / (P/2). With 4 poles it is half the δ of
+**Mechanical angles**: the angle you can see inside the machine is δ_mech = δ_elec / (poles/2). With 4 poles it is half the δ of
 the phasor diagram; the UI says so whenever it shows δ inside the machine.
 
 ---
@@ -329,7 +329,7 @@ the P–Q capability curve (future).
 
 | Requirement | Test |
 |---|---|
-| n_sync = 120 f / P | `machine.test.ts` |
+| n_sync = 120 f / poles | `machine.test.ts` |
 | \|S\|² = P² + Q² | `powers.test.ts` |
 | P = √3 V_T I_L cos θ, Q = √3 V_T I_L sin θ | `powers.test.ts` |
 | Chapman generator and motor phasor equations | `conventions.test.ts`, `powers.test.ts` |

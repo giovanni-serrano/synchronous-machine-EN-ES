@@ -15,7 +15,7 @@ export interface MachineInputs {
   readonly mode: ShaftMode;
   /** Grid frequency, Hz (fixed by the infinite bus). */
   readonly f: number;
-  /** Number of poles P (even integer ≥ 2). */
+  /** Number of poles (even integer ≥ 2). Never called "P": P is active power. */
   readonly poles: number;
   /** Grid line voltage V_T, V (fixed by the infinite bus). */
   readonly vT: number;
@@ -71,7 +71,7 @@ export interface MachineWarnings {
 /** Full derived state. Visual components only READ this. */
 export interface MachineState {
   readonly inputs: MachineInputs;
-  /** n_sync = 120 f / P, rpm. */
+  /** n_sync = 120 f / poles, rpm. */
   readonly nSync: number;
   /** Electrical angular frequency ω = 2πf, rad/s. */
   readonly omegaE: number;

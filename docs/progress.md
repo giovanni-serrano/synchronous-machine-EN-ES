@@ -47,17 +47,30 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 | D5 | Scenario A = motor, B = generator at its rating point (brief left the mode open). | physics-model.md §15 |
 | D6 | Crossing P = 0: optional locked drawing convention, or sweep with E_A = V_φ. | sign-conventions.md §5 |
 | D7 | Spanish number locale `es-419` (decimal point). | glossary.md |
-| D8 | UI Spanish uses "tensión"; glossary maps Chapman ES "voltaje". | glossary.md |
+| D8 | Spanish UI and glossary use "voltaje" (Chapman ES), not "tensión" — approved at CP1. | glossary.md |
 | D9 | n_sync (EN) / n_sinc (ES) and PF / FP are the only per-language symbols (`d.symbols`). | glossary.md |
 | D10 | Clip hook "…gives or takes Q" rewritten with "reactive power" (no symbols in the first line). | storyboard.md |
 | D11 | Transients (synchronisation, pull-out) via a per-unit swing equation with illustrative H, D — qualitative. | physics-model.md §14 |
 | D12 | Placeholder page is temporary; replaced by the Explore view from Phase 2 on. | App.tsx |
+| D13 | P means active power only. The number of poles is always written out ("Poles / Polos" in the UI, `poles` in code, "poles" in formulas: n_sync = 120 f / poles). | glossary.md |
+| D14 | Licensing: code MIT (LICENSE); texts and docs CC BY 4.0 (LICENSE-CC-BY-4.0.txt). Chapman is cited, never reproduced. | README.md |
 
-## Open questions for the author (checkpoint 1)
+## Checkpoint 1 — outcome (approved)
 
-- "tensión" (brief) vs "voltaje" (Chapman ES) in the Spanish UI.
-- `es-419` decimal point vs decimal comma.
-- Scenario A/B mode assignment (D5).
+Approved with adjustments: "voltaje" in Spanish (D8), `es-419` kept (D7), decisions D5, D9, D10 approved, poles notation
+(D13), licenses (D14), remote `origin` = <https://github.com/giovanni-serrano/synchronous-machine-EN-ES>.
+
+**Mutation check of the continuity test** (requested at CP1). A 180° jump of I_A at P = 0 was injected temporarily,
+the suite was run, and the change was reverted with `git checkout` (files verified identical to HEAD afterwards):
+
+| Mutation | Injected in | Result |
+|---|---|---|
+| A: internal I_A negated for P < 0 (a "two internal conventions" bug) | `solve.ts` | **Fails** `continuity › δ, P and I_A change sign smoothly`: step of 55.43 A vs chord ≤ arc bound 0.60 A. Also fails the locked-convention drawn-I_A test. |
+| B: locked drawing convention ignored (drawn I_A follows the mode) | `presentation.ts` | **Fails** `continuity › the DRAWN I_A is continuous when the drawing convention is locked`: step of 54.83 A vs bound 0. |
+
+Before this check only the internal I_A was covered, so mutation B would have gone unnoticed; three tests were added for
+the drawn I_A (locked convention; E_A = V_φ sweep with automatic convention; and a test documenting that the automatic
+convention flips the drawn I_A when I_A ≠ 0 at P = 0). After reverting, all 100 tests pass.
 
 ## Future improvements (not in v1)
 

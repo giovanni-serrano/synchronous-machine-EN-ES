@@ -19,7 +19,7 @@ understanding, not memorised equations. Every scene, control and visual must ser
 | ID | By the end, the learner can explain… |
 |---|---|
 | F1 | how three currents 120° apart produce a rotating magnetic field. |
-| F2 | why n_sync = 120 f / P. |
+| F2 | why n_sync = 120 f / poles. |
 | F3 | that the rotor has its own field (excitation) and that torque comes from two fields trying to align. |
 | F4 | what δ is physically (angle between fields inside the machine) and how it relates to torque and power. |
 | F5 | how electromagnetic induction produces E_A, and what it depends on (E_A = K φ ω). |

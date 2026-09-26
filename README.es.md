@@ -29,3 +29,11 @@ npm test           # pruebas del modelo físico, idiomas e infraestructura
 
 La documentación técnica está en inglés, en la carpeta [docs/](docs/). El glosario [docs/glossary.md](docs/glossary.md)
 relaciona los términos en inglés y en español.
+
+## Referencias y licencia
+
+Chapman (*Máquinas eléctricas* / *Electric Machinery Fundamentals*, McGraw-Hill) se cita solo como referencia de notación
+y convenciones; no se reproduce texto ni figuras del libro.
+
+- Código: licencia [MIT](LICENSE).
+- Textos y documentación: [CC BY 4.0](LICENSE-CC-BY-4.0.txt).

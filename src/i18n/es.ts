@@ -35,7 +35,7 @@ export const es: Dictionary = {
   controls: {
     frequency: 'Frecuencia de la red',
     poles: 'Polos',
-    lineVoltage: 'Tensión de línea de la red',
+    lineVoltage: 'Voltaje de línea de la red',
     shaftLoad: 'Carga en el eje',
     primeMover: 'Potencia del motor primario',
     excitation: 'Excitación del rotor',
@@ -57,9 +57,9 @@ export const es: Dictionary = {
   },
 
   quantities: {
-    vPhi: 'Tensión de fase',
-    vT: 'Tensión de línea',
-    eA: 'Tensión interna generada',
+    vPhi: 'Voltaje de fase',
+    vT: 'Voltaje de línea',
+    eA: 'Voltaje interno generado',
     iA: 'Corriente de armadura',
     iL: 'Corriente de línea',
     xS: 'Reactancia síncrona',
@@ -104,7 +104,7 @@ export const es: Dictionary = {
     iALeads: 'I_A adelanta a V_φ',
     iAInPhase: 'I_A en fase con V_φ',
     mechanicalNote:
-      'Dentro de la máquina se ve δ/(P/2): con {poles} polos, {deltaElec} eléctricos = {deltaMech} mecánicos.',
+      'Dentro de la máquina se ve δ/(polos/2): con {poles} polos, {deltaElec} eléctricos = {deltaMech} mecánicos.',
     deltaBetweenFields: 'δ es el ángulo entre B_R y B_net, no entre B_R y B_S.',
   },
 
@@ -216,8 +216,8 @@ export const es: Dictionary = {
       question: 'Una sola máquina; la energía puede fluir en cualquier sentido.',
     },
     s06: {
-      title: 'Tensión, corriente y desfase',
-      question: '¿Qué significa que la corriente esté en retraso respecto a la tensión?',
+      title: 'Voltaje, corriente y desfase',
+      question: '¿Qué significa que la corriente esté en retraso respecto al voltaje?',
     },
     s07: {
       title: 'Potencia instantánea',

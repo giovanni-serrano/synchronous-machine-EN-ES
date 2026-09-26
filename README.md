@@ -35,7 +35,7 @@ Details: [docs/physics-model.md](docs/physics-model.md) · [docs/sign-convention
 
 ## Architecture (summary)
 
-```
+```text
 MachineInputs ──solveMachine()──► MachineState ──presentOperatingPoint() / gridView() / fieldVectors()──► visuals
                                                    animation clock (separate) ─────────────────────────► visuals
 ```
@@ -75,3 +75,19 @@ qualitative. Not modelled: damper-winding dynamics, salient-pole reluctance torq
 - [docs/progress.md](docs/progress.md) — phase status, decisions, pending work
 - [docs/brief.es.md](docs/brief.es.md) — original project brief (Spanish)
 - [README.es.md](README.es.md) — resumen en español
+
+## References
+
+- S. J. Chapman, *Electric Machinery Fundamentals*, 5th ed., McGraw-Hill, 2012.
+- S. J. Chapman, *Máquinas eléctricas*, 5.ª ed., McGraw-Hill Interamericana, 2012.
+
+Chapman is cited as the reference for notation and conventions only. **No text or figures from the book are reproduced**
+in this project; all explanations, drawings and animations are original.
+
+## License
+
+- **Code** (src/, tests/, configuration): [MIT](LICENSE).
+- **Texts and documentation** (docs/, README files, and the prose of the dictionaries in src/i18n/):
+  [CC BY 4.0](LICENSE-CC-BY-4.0.txt).
+
+© 2026 Luis Giovanni Serrano Bello.

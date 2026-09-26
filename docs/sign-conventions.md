@@ -114,9 +114,9 @@ The internal phasors are continuous through P = 0 (tested).
 
 ### Electrical vs mechanical degrees
 
-δ and θ are **electrical** angles. The angle visible inside a P-pole machine is
+δ and θ are **electrical** angles. The angle visible inside a machine with a given number of poles is
 
-  **δ_mech = δ_elec / (P/2)**
+  **δ_mech = δ_elec / (poles/2)**
 
 With 4 poles, the angle you see between the fields is **half** the δ of the phasor diagram. The UI states this every time
 it shows δ inside the machine (e.g. "with 4 poles, 40° electrical = 20° mechanical").

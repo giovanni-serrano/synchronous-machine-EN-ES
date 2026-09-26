@@ -98,9 +98,9 @@ export function fieldFromInternalVoltage(p: MachineParams, eA: number, f: number
   return eA / (kField * (f / p.ratedF));
 }
 
-/** n_sync = 120 f / P, rpm. */
+/** n_sync = 120 f / poles, rpm. */
 export const synchronousSpeed = (f: number, poles: number): number => (120 * f) / poles;
 
-/** Electrical angle → mechanical angle: θ_mech = θ_elec / (P/2). */
+/** Electrical angle → mechanical angle: θ_mech = θ_elec / (poles/2). */
 export const electricalToMechanical = (angleElec: number, poles: number): number =>
   angleElec / (poles / 2);

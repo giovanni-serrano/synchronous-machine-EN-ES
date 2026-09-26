@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.1.0",
   "description": "Synchronous Machine — visual physics of synchronous motors & generators (EN/ES interactive lab)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giovanni-serrano/synchronous-machine-EN-ES.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
