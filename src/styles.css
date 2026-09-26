@@ -521,3 +521,64 @@ button {
 .lab__side .readouts {
   margin-top: 14px;
 }
+
+.svg-label--delta {
+  fill: #e8b04a;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* Cross-section + electrical-sum inset side by side; stacked when narrow */
+.machine-wrap--inset {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 250px);
+  gap: 12px;
+  align-items: start;
+}
+
+@media (max-width: 1180px) {
+  .machine-wrap--inset {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .machine-wrap--inset .inset {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
+.inset {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.inset svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.inset__title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.svg-label--small {
+  font-size: 11px;
+}
+
+.svg-tick--delta {
+  fill: #e8b04a;
+}
+
+/* Dark halo behind SVG labels so they stay legible over flux arrows, steel or other marks */
+.svg-label,
+.svg-pole,
+.svg-tick--delta {
+  paint-order: stroke;
+  stroke: #0f1216;
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}

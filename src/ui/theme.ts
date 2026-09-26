@@ -32,6 +32,8 @@ export const COLORS = {
   q: '#e66767',
   /** S — neutral hypotenuse. */
   s: '#c3c2b7',
+  /** Angles (δ arcs) and UI accent — always drawn with a text label next to it. */
+  accent: '#e8b04a',
   ink: '#e6e9ed',
   inkDim: '#8d97a3',
   muted: '#5c6570',

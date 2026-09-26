@@ -262,10 +262,13 @@ export const en = {
     syncNote: 'Rotor and fields turn together at {nSync}: the angles between them stay fixed.',
     sumNoteTwoPoles: 'With 2 poles the arrows add as vectors: B_net = B_R + B_S.',
     sumNoteManyPoles:
-      'With {poles} poles each arrow points at one N pole of its field; the vector sum B_net = B_R + B_S holds in electrical degrees.',
+      'With {poles} poles each arrow points at one N pole of its field; the vector sum B_net = B_R + B_S holds in electrical degrees (see the inset).',
     rotorPolesNote: 'The rotor’s N pole sits on B_R; the field winding (I_F) makes it.',
     rotation: 'The curved arrow outside the stator shows the direction of rotation (counterclockwise).',
     fieldCurrentShort: 'field current I_F',
+    insetTitle: 'B_R + B_S = B_net · electrical degrees',
+    insetNote:
+      'Same instant, in electrical degrees, where the three fields add tip to tail. Turn each arrow by −90° and you get E_A, V_φ and −jX_S I_A: the phasor diagram.',
   },
 
   fieldLab: {

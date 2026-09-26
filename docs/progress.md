@@ -72,6 +72,22 @@ phasors and power triangle in sync, EN/ES) — stop and wait for feedback before
 - Shared `TransportControls` / `useTransportKeys`.
 - Checked in Edge: scenario A (motor, 4 poles) and B (generator, 2 poles) in EN/ES; label collisions fixed.
 - Tests: 124 passing.
+- **Legibility revision (requested after Phase 3 review):**
+  - B_R, B_S, B_net lengthened (58 px per flux pu: B_net reaches the pole shoes, the rating-point B_R the air gap;
+    true ratios kept; never past the bore, even at I_F = 10 A).
+  - All geometry moved to `src/ui/machine/machineLayout.ts` (pure) with a greedy label placer
+    (`src/ui/labelLayout.ts`). Tests sweep scenarios A–G × 2/4/6/8 poles × 24 instants: no label touches another label,
+    a rotor pole letter, a field-winding conductor or an arrow shaft.
+  - Rotor pole letters moved to the pole tips (off the pole axis, so never under B_R).
+  - δ arc larger (r 50–64 px, outside the field-coil ring), gold, with a two-line value label "δ = 20.5° / mech."
+    placed as close to the arc as the arrows allow; a thin leader line joins them when the label had to move more than
+    20 px away (tested: always ≤ 60 px from the arc, leader present beyond 20 px).
+  - New inset for 4+ poles: B_R + B_S = B_net tip-to-tail in electrical degrees at the same instant, with δ electrical;
+    fixed frame, zoom constant while rotating; note bridging to the phasor diagram (voltage = field turned −90°).
+  - Dark halo on SVG labels.
+  - Verified in Edge: 2 and 4 poles, EN and ES, and 390 px (iframe probe, no horizontal overflow).
+- New test (for Phase 4): stator dots/crosses show the physical (internal) current and never depend on the convention
+  used to present I_A (`tests/snapshot.test.ts`).
 - Next (Phase 4): MOTOR / GENERATOR selector, load and excitation sliders, energy-flow arrows, continuous motor ↔ generator
   sweep with a locked drawing convention.
 

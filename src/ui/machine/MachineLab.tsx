@@ -24,6 +24,7 @@ import { ToggleChip } from '../controls/ToggleChip';
 import { TransportControls, stepper, useTransportKeys } from '../controls/Transport';
 import { SymbolText } from '../SymbolText';
 import { COLORS } from '../theme';
+import { ElectricalSumInset } from './ElectricalSumInset';
 import { MachineView, type MachineShow } from './MachineView';
 
 const M = REFERENCE_MACHINE;
@@ -72,7 +73,10 @@ export function MachineLab() {
         <figure className="panel panel--machine">
           <figcaption className="panel__title">{d.machineLab.viewTitle}</figcaption>
           {snap ? (
-            <MachineView snap={snap} poles={poles} show={show} highlight={highlight} onHighlight={setHighlight} />
+            <div className={poles > 2 ? 'machine-wrap machine-wrap--inset' : 'machine-wrap'}>
+              <MachineView snap={snap} poles={poles} show={show} highlight={highlight} onHighlight={setHighlight} />
+              {poles > 2 && <ElectricalSumInset snap={snap} />}
+            </div>
           ) : (
             <p className="banner banner--critical">{d.stability.lost} — {d.stability.lostExplanation}</p>
           )}

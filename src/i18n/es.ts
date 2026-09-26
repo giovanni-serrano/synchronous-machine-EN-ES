@@ -284,10 +284,13 @@ export const es: Dictionary = {
     syncNote: 'El rotor y los campos giran juntos a {nSync}: los ángulos entre ellos no cambian.',
     sumNoteTwoPoles: 'Con 2 polos las flechas se suman como vectores: B_net = B_R + B_S.',
     sumNoteManyPoles:
-      'Con {poles} polos cada flecha apunta a un polo N de su campo; la suma vectorial B_net = B_R + B_S se cumple en grados eléctricos.',
+      'Con {poles} polos cada flecha apunta a un polo N de su campo; la suma vectorial B_net = B_R + B_S se cumple en grados eléctricos (ver el recuadro).',
     rotorPolesNote: 'El polo N del rotor está sobre B_R; lo produce el devanado de campo (I_F).',
     rotation: 'La flecha curva fuera del estator indica el sentido de giro (antihorario).',
     fieldCurrentShort: 'corriente de campo I_F',
+    insetTitle: 'B_R + B_S = B_net · grados eléctricos',
+    insetNote:
+      'El mismo instante, en grados eléctricos, donde los tres campos se suman punta con cola. Gira cada flecha −90° y obtienes E_A, V_φ y −jX_S I_A: el diagrama fasorial.',
   },
 
   fieldLab: {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { machineSnapshot } from '../src/animation/snapshot';
-import { PHASES, PHASE_AXES, solveMachine, wrapAngle } from '../src/physics';
+import { PHASES, PHASE_AXES, presentOperatingPoint, solveMachine, wrapAngle } from '../src/physics';
 import { M, R, expectRel, inputs } from './helpers';
 
 const times = [0, 0.0013, 0.004, 0.0101, 0.5];
@@ -63,5 +63,58 @@ describe('machine snapshot (time-dependent picture of a steady state)', () => {
     const s = solveMachine(M, inputs({ mode: 'motor', load: 150_000, iF: 3 }));
     expect(s.stability).toBe('lostSynchronism');
     expect(machineSnapshot(M, s, 0)).toBeNull();
+  });
+});
+
+describe('electrical-degree vector sum (inset beside the cross-section)', () => {
+  it('B_R + B_S = B_net at any instant, for any number of poles', () => {
+    for (const poles of [2, 4, 8])
+      for (const mode of ['motor', 'generator'] as const) {
+        const s = solveMachine(M, inputs({ mode, poles, load: 90_000, iF: 7 }));
+        for (const t of times) {
+          const x = machineSnapshot(M, s, t)!;
+          const sx = x.magnitude.bR * Math.cos(x.elec.bR) + x.magnitude.bS * Math.cos(x.elec.bS);
+          const sy = x.magnitude.bR * Math.sin(x.elec.bR) + x.magnitude.bS * Math.sin(x.elec.bS);
+          expectRel(sx, x.magnitude.bNet * Math.cos(x.elec.bNet), 0, 1e-9);
+          expectRel(sy, x.magnitude.bNet * Math.sin(x.elec.bNet), 0, 1e-9);
+        }
+      }
+  });
+});
+
+describe('stator dots/crosses show the PHYSICAL current (Phase 4 requirement)', () => {
+  it('the snapshot currents do not depend on the convention used to present I_A', () => {
+    for (const mode of ['motor', 'generator'] as const) {
+      const s = solveMachine(M, inputs({ mode, load: 70_000, iF: 7.5 }));
+      const op = s.op!;
+      const genView = presentOperatingPoint(op, s.convention, 'generator');
+      const motView = presentOperatingPoint(op, s.convention, 'motor');
+      // the two presentations draw opposite I_A phasors…
+      expectRel(genView.iA.re, -motView.iA.re, 1e-12);
+      for (const t of times) {
+        const snap = machineSnapshot(M, s, t)!;
+        for (const ph of PHASES) {
+          // …but the drawn winding current is the internal one in both cases: same sign, same size
+          const physical = (op.iAMag / R.iRated) * Math.cos(s.omegaE * t + Math.atan2(op.iA.im, op.iA.re) - PHASE_AXES[ph]);
+          expectRel(snap.currents[ph], physical, 0, 1e-12);
+          const fromMotorPhasor = (motView.iAMag / R.iRated) * Math.cos(s.omegaE * t + Math.atan2(motView.iA.im, motView.iA.re) - PHASE_AXES[ph]);
+          // using the motor-convention phasor would flip every dot into a cross
+          if (Math.abs(physical) > 1e-6) expect(Math.sign(fromMotorPhasor)).toBe(-Math.sign(physical));
+        }
+      }
+    }
+  });
+
+  it('the same physical operating point gives identical dots/crosses whichever mode label it gets', () => {
+    // P = 0 with the selector on MOTOR or on GENERATOR: same physics, different presentation convention.
+    const asMotor = solveMachine(M, inputs({ mode: 'motor', load: 0, iF: 8 }));
+    const asGen = solveMachine(M, inputs({ mode: 'generator', load: 0, iF: 8 }));
+    expect(asMotor.convention).toBe('motor');
+    expect(asGen.convention).toBe('generator');
+    for (const t of times) {
+      const a = machineSnapshot(M, asMotor, t)!;
+      const b = machineSnapshot(M, asGen, t)!;
+      for (const ph of PHASES) expect(a.currents[ph]).toBe(b.currents[ph]);
+    }
   });
 });
